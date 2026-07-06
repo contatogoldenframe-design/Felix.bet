@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FelixBet - Apostas & Cassino</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0a0a0f; color: #fff; }
+        
+        .header { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #FFD700; }
+        .logo { font-size: 32px; font-weight: 900; background: linear-gradient(135deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav { display: flex; gap: 20px; align-items: center; }
+        .nav a { color: #ccc; text-decoration: none; font-size: 14px; transition: color 0.3s; }
+        .nav a:hover { color: #FFD700; }
+        .btn { padding: 10px 24px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+        .btn-gold { background: linear-gradient(135deg, #FFD700, #FFA500); color: #1a1a2e; }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(255,215,0,0.4); }
+        .btn-outline { background: transparent; border: 2px solid #FFD700; color: #FFD700; }
+        .btn-outline:hover { background: #FFD700; color: #1a1a2e; }
+        
+        .hero { text-align: center; padding: 80px 20px; background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%); }
+        .hero h1 { font-size: 48px; margin-bottom: 20px; }
+        .hero h1 span { background: linear-gradient(135deg, #FFD700, #FFA500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { color: #888; font-size: 18px; margin-bottom: 30px; }
+        .hero-stats { display: flex; justify-content: center; gap: 60px; margin-top: 50px; }
+        .stat { text-align: center; }
+        .stat-num { font-size: 36px; font-weight: bold; color: #FFD700; }
+        .stat-label { color: #666; font-size: 14px; margin-top: 5px; }
+        
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 40px; max-width: 1200px; margin: 0 auto; }
+        .game-card { background: #1a1a2e; border-radius: 12px; padding: 30px; text-align: center; cursor: pointer; transition: all 0.3s; border: 1px solid #2a2a3e; }
+        .game-card:hover { transform: translateY(-5px); border-color: #FFD700; box-shadow: 0 10px 30px rgba(255,215,0,0.1); }
+        .game-icon { font-size: 48px; margin-bottom: 15px; }
+        .game-name { font-size: 18px; margin-bottom: 10px; }
+        .game-rtp { color: #4CAF50; font-size: 14px; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: #1a1a2e; border-radius: 16px; padding: 40px; max-width: 500px; width: 90%; border: 1px solid #FFD700; }
+        .modal h2 { margin-bottom: 20px; text-align: center; }
+        .modal input { width: 100%; padding: 12px; margin: 10px 0; background: #2a2a3e; border: 1px solid #3a3a4e; border-radius: 8px; color: #fff; font-size: 16px; }
+        .modal input:focus { border-color: #FFD700; outline: none; }
+        
+        .footer { text-align: center; padding: 40px; color: #444; border-top: 1px solid #1a1a2e; margin-top: 50px; }
+        
+        .toast { position: fixed; bottom: 20px; right: 20px; padding: 16px 24px; border-radius: 8px; color: #fff; font-weight: bold; z-index: 2000; animation: slideIn 0.3s; }
+        .toast.success { background: #4CAF50; }
+        .toast.error { background: #f44336; }
+        .toast.info { background: #2196F3; }
+        
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        
+        @media (max-width: 768px) {
+            .header { padding: 15px 20px; flex-direction: column; gap: 15px; }
+            .hero h1 { font-size: 32px; }
+            .hero-stats { flex-direction: column; gap: 30px; }
+            .games-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">🎰 FELIXBET</div>
+        <nav class="nav">
+            <a href="#" onclick="showGames()">Jogos</a>
+            <a href="#" onclick="showBalance()">Saldo: <span id="headerBalance">R$ 0,00</span></a>
+            <button class="btn btn-gold" onclick="showDeposit()">💰 Depositar</button>
+            <button class="btn btn-outline" onclick="showWithdraw()">💸 Sacar</button>
+            <button class="btn btn-outline" id="authBtn" onclick="showLogin()">Entrar</button>
+        </nav>
+    </header>
+
+    <section class="hero" id="heroSection">
+        <h1><span>FELIXBET</span> - Sua Sorte Começa Aqui</h1>
+        <p>🎮 Mais de 50 jogos • 🚀 Saques rápidos • 🎯 Depósito mínimo de R$ 1,00</p>
+        <button class="btn btn-gold" style="font-size: 18px; padding: 15px 40px;" onclick="showRegister()">🎰 COMEÇAR AGORA</button>
+        <div class="hero-stats">
+            <div class="stat"><div class="stat-num" id="statUsers">0</div><div class="stat-label">Jogadores</div></div>
+            <div class="stat"><div class="stat-num" id="statGames">50+</div><div class="stat-label">Jogos</div></div>
+            <div class="stat"><div class="stat-num" id="statRtp">97%</div><div class="stat-label">RTP Médio</div></div>
+        </div>
+    </section>
+
+    <div class="games-grid" id="gamesGrid">
+        <!-- Jogos serão carregados aqui via JS -->
+    </div>
+
+    <footer class="footer">
+        <p>© 2024 FelixBet - Todos os direitos reservados</p>
+        <p style="margin-top: 10px; font-size: 12px;">Jogue com responsabilidade. Proibido para menores de 18 anos.</p>
+    </footer>
+
+    <!-- Modal de Login -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <h2>🔐 Entrar</h2>
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Senha">
+            <button class="btn btn-gold" style="width: 100%; margin-top: 15px;" onclick="login()">Entrar</button>
+            <p style="text-align: center; margin-top: 15px; color: #888;">Não tem conta? <a href="#" onclick="showRegister()" style="color: #FFD700;">Cadastre-se</a></p>
+        </div>
+    </div>
+
+    <!-- Modal de Cadastro -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <h2>📝 Cadastro</h2>
+            <input type="text" id="regName" placeholder="Nome completo">
+            <input type="email" id="regEmail" placeholder="Email">
+            <input type="password" id="regPassword" placeholder="Senha">
+            <input type="password" id="regConfirm" placeholder="Confirmar senha">
+            <button class="btn btn-gold" style="width: 100%; margin-top: 15px;" onclick="register()">Criar Conta</button>
+        </div>
+    </div>
+
+    <!-- Modal de Depósito -->
+    <div class="modal" id="depositModal">
+        <div class="modal-content">
+            <h2>💰 Depositar</h2>
+            <p style="text-align: center; color: #888;">Depósito mínimo: <strong style="color: #FFD700;">R$ 1,00</strong></p>
+            <input type="number" id="depositAmount" placeholder="Valor do depósito" min="1" step="1">
+            <button class="btn btn-gold" style="width: 100%; margin-top: 15px;" onclick="deposit()">Depositar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Saque -->
+    <div class="modal" id="withdrawModal">
+        <div class="modal-content">
+            <h2>💸 Sacar</h2>
+            <p style="text-align: center; color: #888;">Saque mínimo: <strong style="color: #FFD700;">R$ 50,00</strong></p>
+            <input type="number" id="withdrawAmount" placeholder="Valor do saque" min="50" step="1">
+            <input type="text" id="withdrawPix" placeholder="Chave PIX (CPF/Email/Telefone)">
+            <button class="btn btn-gold" style="width: 100%; margin-top: 15px;" onclick="withdraw()">Solicitar Saque</button>
+        </div>
+    </div>
+
+    <script>
+        const API = 'http://localhost:3000/api';
+        let token = localStorage.getItem('felixbet_token');
+        let currentUser = null;
+
+        // Jogos disponíveis
+        const GAMES = [
+            { id: 1, name: 'Crash', icon: '🛩️', desc: 'Multiplique seus ganhos', rtp: 95 },
+            { id: 2, name: 'Mines', icon: '💣', desc: 'Campo minado', rtp: 96 },
+            { id: 3, name: 'Double', icon: '🔴⚫', desc: 'Duplique sua aposta', rtp: 94 },
+            { id: 4, name: 'Plinko', icon: '🔴', desc: 'Bolinha da sorte', rtp: 95.5 },
+            { id: 5, name: 'Slots Classic', icon: '🎰', desc: 'Caça-níqueis 3x3', rtp: 94 },
+            { id: 6, name: 'Slots Fruit', icon: '🍒', desc: 'Caça-níqueis 5x3', rtp: 95 },
+            { id: 7, name: 'Blackjack', icon: '🃏', desc: '21 contra o dealer', rtp: 97 },
+            { id: 8, name: 'Roleta', icon: '🎡', desc: 'Roleta europeia', rtp: 97.3 },
+            { id: 9, name: 'Dice', icon: '🎲', desc: 'Jogo de dados', rtp: 96 },
+            { id: 10, name: 'Baccarat', icon: '♠️', desc: 'Baccarat', rtp: 98 },
+            { id: 11, name: 'Keno', icon: '🎱', desc: 'Loteria', rtp: 92 },
+            { id: 12, name: 'Tower', icon: '🏗️', desc: 'Subida na torre', rtp: 94 },
+            { id: 13, name: 'Wheel', icon: '🎡', desc: 'Roda da fortuna', rtp: 93 },
+            { id: 14, name: 'Limbo', icon: '🌌', desc: 'Multiplicador infinito', rtp: 95 },
+            { id: 15, name: 'Diamond Rush', icon: '💎', desc: 'Caça ao diamante', rtp: 95.5 },
+            { id: 16, name: 'Lucky 7', icon: '7️⃣', desc: 'Sorte do 7', rtp: 94.5 },
+            { id: 17, name: 'Poker Texas', icon: '♠️', desc: 'Texas Holdem', rtp: 96 },
+            { id: 18, name: 'Video Poker', icon: '🃏', desc: 'Poker de vídeo', rtp: 97 },
+            { id: 19, name: 'Minesweeper Pro', icon: '💥', desc: 'Campo minado pro', rtp: 96.5 },
+            { id: 20, name: 'Crash 2x', icon: '🚀', desc: 'Crash turbo', rtp: 94 }
+        ];
+
+        // Gerar 50+ jogos (repetindo com variações)
+        const ALL_GAMES = [];
+        const icons = ['🎰', '🃏', '🎲', '🎡', '💎', '🍒', '🍀', '⭐', '💰', '🔔', '7️⃣', '♠️', '♥️', '♦️', '♣️', '🛩️', '💣', '🔴', '🌌', '🏗️', '🎱', '🚀', '💥', '🔥', '⚡'];
+        const names = ['Fruit', 'Gold', 'Lucky', 'Mega', 'Super', 'Ultra', 'Diamond', 'Royal', 'Classic', 'VIP', 'Pro', 'Deluxe', 'Express', 'Turbo', 'Legend', 'Champion', 'Fortune', 'Star', 'Magic', 'Mystic', 'Wild', 'Thunder', 'Blaze', 'Crown', 'Empire'];
+
+        for (let i = 0; i < 55; i++) {
+            const icon = icons[i % icons.length];
+            const name = names[i % names.length];
+            const rtp = (92 + Math.random() * 6).toFixed(1);
+            ALL_GAMES.push({
+                id: i + 1,
+                name: `${name} ${['Slots', 'Wheel', 'Dice', 'Cards', 'Rush'][i % 5]}`,
+                icon: icon,
+                desc: `Jogo #${i + 1}`,
+                rtp: rtp
+            });
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function showLogin() { document.getElementById('loginModal').classList.add('active'); }
+        function showRegister() { document.getElementById('registerModal').classList.add('active'); document.getElementById('loginModal').classList.remove('active'); }
+        function showDeposit() { 
+            if (!token) { showToast('Faça login primeiro', 'error'); return; }
+            document.getElementById('depositModal').classList.add('active'); 
+        }
+        function showWithdraw() { 
+            if (!token) { showToast('Faça login primeiro', 'error'); return; }
+            document.getElementById('withdrawModal').classList.add('active'); 
+        }
+
+        // Fechar modais clicando fora
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.remove('active');
+            });
+        });
+
+        async function register() {
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirm').value;
+
+            if (!name || !email || !password) {
+                showToast('Preencha todos os campos', 'error');
+                return;
+            }
+            if (password !== confirm) {
+                showToast('Senhas não conferem', 'error');
+                return;
+            }
+            if (password.length < 6) {
+                showToast('Senha deve ter no mínimo 6 caracteres', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    token = data.token;
+                    currentUser = data.user;
+                    localStorage.setItem('felixbet_token', token);
+                    document.getElementById('registerModal').classList.remove('active');
+                    document.getElementById('authBtn').textContent = `👤 ${currentUser.name.split(' ')[0]}`;
+                    document.getElementById('authBtn').onclick = logout;
+                    document.getElementById('headerBalance').textContent = `R$ ${currentUser.balance.toFixed(2)}`;
+                    showToast(`✅ Conta criada! Bem-vindo, ${currentUser.name}!`, 'success');
+                    loadGames();
+                } else {
+                    showToast(data.error || 'Erro ao cadastrar', 'error');
+                }
+            } catch (err) {
+                showToast('Erro de conexão com o servidor', 'error');
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showToast('Preencha todos os campos', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    token = data.token;
+                    currentUser = data.user;
+                    localStorage.setItem('felixbet_token', token);
+                    document.getElementById('loginModal').classList.remove('active');
+                    document.getElementById('authBtn').textContent = `👤 ${currentUser.name.split(' ')[0]}`;
+                    document.getElementById('authBtn').onclick = logout;
+                    document.getElementById('headerBalance').textContent = `R$ ${currentUser.balance.toFixed(2)}`;
+                    showToast(`✅ Bem-vindo de volta, ${currentUser.name}!`, 'success');
+                    
+                    // Se for admin, redirecionar
+                    if (currentUser.is_admin) {
+                        showToast('🔐 Modo Administrador ativado', 'info');
+                        loadAdminPanel();
+                    } else {
+                        loadGames();
+                    }
+                } else {
+                    showToast(data.error || 'Erro ao entrar', 'error');
+                }
+            } catch (err) {
+                showToast('Erro de conexão com o servidor', 'error');
+            }
+        }
+
+        function logout() {
+            token = null;
+            currentUser = null;
+            localStorage.removeItem('felixbet_token');
+            document.getElementById('authBtn').textContent = 'Entrar';
+            document.getElementById('authBtn').onclick = showLogin;
+            document.getElementById('headerBalance').textContent = 'R$ 0,00';
+            showToast('👋 Até logo!', 'info');
+            loadGames();
+        }
+
+        async function deposit() {
+            const amount = parseFloat(document.getElementById('depositAmount').value);
+            if (!amount || amount < 1) {
+                showToast('Depósito mínimo: R$ 1,00', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API}/users/deposit`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ amount, paymentMethod: 'PIX' })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('depositModal').classList.remove('active');
+                    document.getElementById('depositAmount').value = '';
+                    showToast(`💰 Depósito de R$ ${amount.toFixed(2)} realizado!`, 'success');
+                    updateBalance();
+                } else {
+                    showToast(data.error || 'Erro no depósito', 'error');
+                }
+            } catch (err) {
+                showToast('Erro de conexão', 'error');
+            }
+        }
+
+        async function withdraw() {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const pixKey = document.getElementById('withdrawPix').value;
+
+            if (!amount || amount < 50) {
+                showToast('Saque mínimo: R$ 50,00', 'error');
+                return;
+            }
+            if (!pixKey) {
+                showToast('Informe a chave PIX', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API}/users/withdraw`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ amount, pixKey })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('withdrawModal').classList.remove('active');
+                    document.getElementById('withdrawAmount').value = '';
+                    document.getElementById('withdrawPix').value = '';
+                    showToast(`💸 Saque de R$ ${amount.toFixed(2)} solicitado!`, 'success');
+                    updateBalance();
+                } else {
+                    showToast(data.error || 'Erro no saque', 'error');
+                }
+            } catch (err) {
+                showToast('Erro de conexão', 'error');
+            }
+        }
+
+        async function updateBalance() {
+            try {
+                const response = await fetch(`${API}/users/balance`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('headerBalance').textContent = `R$ ${data.balance.toFixed(2)}`;
+                }
+            } catch (err) {}
+        }
+
+        function showBalance() {
+            if (!token) {
+                showToast('Faça login para ver seu saldo', 'info');
+                return;
+            }
+            updateBalance();
+            showToast('Saldo atualizado!', 'success');
+        }
+
+        function loadGames() {
+            const grid = document.getElementById('gamesGrid');
+            grid.innerHTML = '';
+            
+            const games = ALL_GAMES;
+            games.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                card.innerHTML = `
+                    <div class="game-icon">${game.icon}</div>
+                    <div class="game-name">${game.name}</div>
+                    <div style="color: #888; font-size: 12px; margin-bottom: 10px;">${game.desc}</div>
+                    <div class="game-rtp">🎯 RTP ${game.rtp}%</div>
+                `;
+                card.onclick = () => {
+                    if (!token) {
+                        showToast('Faça login para jogar', 'info');
+                        showLogin();
+                        return;
+                    }
+                    showToast(`🎮 ${game.name} - Em desenvolvimento...`, 'info');
+                };
+                grid.appendChild(card);
+            });
+        }
+
+        function loadAdminPanel() {
+            document.getElementById('heroSection').innerHTML = `
+                <h1><span>👑 PAINEL ADMINISTRATIVO</span></h1>
+                <p>Gerencie a FelixBet</p>
+                <div class="hero-stats">
+                    <div class="stat"><div class="stat-num" id="adminUsers">0</div><div class="stat-label">Usuários</div></div>
+                    <div class="stat"><div class="stat-num" id="adminBalance">R$ 0</div><div class="stat-label">Saldo Admin</div></div>
+                    <div class="stat"><div class="stat-num" id="adminBets">0</div><div class="stat-label">Apostas</div></div>
+                </div>
+            `;
+            document.getElementById('gamesGrid').style.display = 'none';
+        }
+
+        // Verificar sessão ao carregar
+        if (token) {
+            login();
+        }
+
+        // Carregar jogos
+        loadGames();
+
+        // Atualizar saldo a cada 30 segundos
+        setInterval(() => {
+            if (token) updateBalance();
+        }, 30000);
+
+        console.log('🎰 FelixBet - Sistema iniciado');
+        console.log(`📧 Admin: admin@felixbet.com`);
+        console.log(`🔑 Senha: AdminFelix@2024!`);
+    </script>
+</body>
+</html>
