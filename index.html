@@ -904,3 +904,151 @@ function playGame(){
   // Lógica por tipo de jogo
   switch(type){
     case
+// Lógica por tipo de jogo
+  switch(type){
+    case 'crash':
+      // Crash: multiplicador aleatório, 95% das vezes crasha rápido
+      const crashPoint = Math.random() < 0.05 ? (5 + Math.random() * 20) : (1.01 + Math.random() * 1.5);
+      const cashoutAt = 1 + Math.random() * 3;
+      won = cashoutAt < crashPoint;
+      mult = won ? cashoutAt : 0;
+      break;
+      
+    case 'mines':
+      // Mines: grid 5x5, 3 bombas. Jogador clica em 1 quadrado
+      const bombas = new Set();
+      while(bombas.size < 3) bombas.add(Math.floor(Math.random() * 25));
+      const escolha = Math.floor(Math.random() * 25);
+      won = !bombas.has(escolha);
+      mult = won ? 1.5 + Math.random() * 2 : 0;
+      break;
+      
+    case 'slots':
+      // Slots 3x3: 3 símbolos iguais na linha do meio
+      const s1 = Math.floor(Math.random() * 6);
+      const s2 = Math.floor(Math.random() * 6);
+      const s3 = Math.floor(Math.random() * 6);
+      won = (s1 === s2 && s2 === s3);
+      if(won && s1 === 0) mult = 50; // 7️⃣
+      else if(won && s1 === 1) mult = 20; // 💰
+      else if(won) mult = 10;
+      else mult = 0;
+      break;
+      
+    case 'tigre':
+      // Fortune Tiger: 3x3 com wild
+      const t1 = Math.floor(Math.random() * 5);
+      const t2 = Math.floor(Math.random() * 5);
+      const t3 = Math.floor(Math.random() * 5);
+      won = (t1 === t2 && t2 === t3) || t1 === 4 || t2 === 4 || t3 === 4; // wild = 4
+      mult = won ? (3 + Math.random() * 7) : 0;
+      break;
+      
+    case 'cards':
+      // 21: jogador vs dealer
+      const player = 14 + Math.floor(Math.random() * 7);
+      const dealer = 14 + Math.floor(Math.random() * 7);
+      won = player > dealer && player <= 21;
+      mult = won ? 2 : 0;
+      break;
+      
+    case 'dice':
+      // Dados: acima ou abaixo de 7
+      const dado1 = Math.floor(Math.random() * 6) + 1;
+      const dado2 = Math.floor(Math.random() * 6) + 1;
+      const soma = dado1 + dado2;
+      const escolhaDado = Math.random() < 0.5;
+      won = (escolhaDado && soma > 7) || (!escolhaDado && soma < 7);
+      mult = won ? 2 : 0;
+      break;
+      
+    default:
+      // Plinko e outros: 40% de chance
+      won = Math.random() < 0.4;
+      mult = won ? 1.5 + Math.random() * 3 : 0;
+  }
+  
+  winAmt = won ? Math.round(bet * mult * 100) / 100 : 0;
+  if(won) addBalance(winAmt);
+  
+  // Registrar histórico
+  const u = getUser();
+  if(u && !u.isAdmin){
+    const idx = users.findIndex(x => x.id === u.id);
+    if(idx > -1){
+      if(!users[idx].history) users[idx].history = [];
+      users[idx].history.unshift({
+        type: 'bet',
+        amount: won ? winAmt : -bet,
+        date: new Date().toLocaleString('pt-BR'),
+        desc: `${currentGame.name} - ${won ? '🏆' : '💥'} R$ ${bet.toFixed(2)}`
+      });
+      users[idx].totalBets = (users[idx].totalBets || 0) + 1;
+      if(won) {
+        users[idx].totalWins = (users[idx].totalWins || 0) + 1;
+        // Prêmio sai do admin
+        adminData.balance -= winAmt;
+        adminData.totalPrizes = (adminData.totalPrizes || 0) + winAmt;
+        saveAdmin();
+      }
+      saveUsers();
+    }
+  }
+  
+  const result = document.getElementById('gameResult');
+  result.style.display = 'block';
+  if(won){
+    result.className = 'game-result win';
+    result.textContent = `🏆 VOCÊ GANHOU! R$ ${winAmt.toFixed(2)} (${mult.toFixed(2)}x)`;
+    // Animação especial para slots/tigre
+    if(type === 'slots' || type === 'tigre'){
+      document.getElementById('gameSpecificArea').innerHTML = `
+        <div class="slots-grid" style="max-width:200px">
+          ${[s1||t1, s2||t2, s3||t3].map(v => 
+            `<div class="slot-cell spin">${['7️⃣','💰','🍒','🍋','🍀','⭐','🐯','👑','🔔','💎'][v]||'🍒'}</div>`
+          ).join('')}
+        </div>`;
+    }
+    toast(`🏆 Ganhou R$ ${winAmt.toFixed(2)} no ${currentGame.name}!`, 'success');
+  } else {
+    result.className = 'game-result lose';
+    result.textContent = `💥 Perdeu R$ ${bet.toFixed(2)}`;
+    // Dinheiro da perda vai pro admin
+    adminData.balance += bet;
+    saveAdmin();
+  }
+}
+
+// ========== INICIALIZAÇÃO ==========
+function init(){
+  if(token){
+    if(token === 'admin'){
+      currentUser = {id:'admin',name:'Administrador',email:ADMIN_EMAIL,isAdmin:true};
+    } else {
+      const u = users.find(x => x.id === token);
+      if(u) currentUser = u;
+      else { token = null; localStorage.removeItem('felixbet_token'); }
+    }
+  }
+  updateUI();
+  loadGames();
+  
+  // Auto-save a cada 10s
+  setInterval(() => {
+    if(token && currentUser && !currentUser.isAdmin){
+      const found = users.find(x => x.id === token);
+      if(found) currentUser = found;
+      document.getElementById('headerBalance').textContent = `R$ ${getBalance().toFixed(2)}`;
+    }
+  }, 10000);
+  
+  console.log('🎰 FelixBet - Sistema Completo Carregado!');
+  console.log(`👑 Admin: ${ADMIN_EMAIL} / ${ADMIN_PASS}`);
+  console.log(`💰 Saldo Admin: R$ ${adminData.balance.toFixed(2)}`);
+  console.log(`👥 Jogadores: ${users.length}`);
+}
+
+init();
+</script>
+</body>
+</html>
