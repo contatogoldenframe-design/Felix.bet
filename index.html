@@ -4,1048 +4,793 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FelixBet - Apostas & Cassino</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',sans-serif;background:#0a0a12;color:#fff;overflow-x:hidden}
-:root{--gold:#FFD700;--gold2:#FF8C00;--bg:#0a0a12;--card:#12121c;--card2:#1a1a28;--border:rgba(255,215,0,.08)}
-
-/* HEADER */
-.header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,10,18,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
-.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;-webkit-text-fill-color:initial;color:#0a0a12}
-.nav{display:flex;gap:4px}
-.nav a{color:#999;text-decoration:none;font-size:13px;font-weight:600;padding:7px 12px;border-radius:6px;transition:.3s;cursor:pointer}
-.nav a:hover,.nav a.active{color:var(--gold);background:rgba(255,215,0,.08)}
-.header-right{display:flex;align-items:center;gap:8px}
-.balance-box{background:rgba(255,215,0,.05);border:1px solid rgba(255,215,0,.12);padding:5px 14px;border-radius:8px;font-size:13px;font-weight:700;color:var(--gold)}
-.balance-box small{font-size:10px;color:#888;font-weight:400;display:block}
-.btn{font-family:'Inter',sans-serif;padding:8px 18px;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;transition:all .25s}
-.btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0a12}
-.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(255,215,0,.2)}
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif}
+body{background:#0a0a12;color:#fff}
+.header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,18,.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,215,0,.1);padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:18px;font-weight:900;background:linear-gradient(135deg,#FFD700,#FF8C00);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav{display:flex;gap:2px}
+.nav a{color:#999;text-decoration:none;font-size:12px;font-weight:600;padding:5px 8px;border-radius:6px;cursor:pointer}
+.nav a:hover,.nav a.active{color:#FFD700;background:rgba(255,215,0,.08)}
+.hright{display:flex;align-items:center;gap:6px}
+.saldo{background:rgba(255,215,0,.05);border:1px solid rgba(255,215,0,.1);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;color:#FFD700;line-height:1.2;text-align:center}
+.saldo small{font-size:8px;color:#888;display:block}
+.btn{font-size:11px;padding:6px 12px;border:none;border-radius:6px;font-weight:700;cursor:pointer;transition:.3s;font-family:inherit}
+.btn-gold{background:linear-gradient(135deg,#FFD700,#FF8C00);color:#0a0a12}
+.btn-gold:hover{box-shadow:0 4px 16px rgba(255,215,0,.2)}
 .btn-dark{background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.08)}
 .btn-dark:hover{background:rgba(255,255,255,.1)}
-.btn-sm{padding:5px 12px;font-size:11px}
-.btn-danger{background:rgba(244,67,54,.15);color:#f44336;border:1px solid rgba(244,67,54,.2)}
-.btn-danger:hover{background:rgba(244,67,54,.25)}
-.btn-success{background:rgba(76,175,80,.15);color:#4CAF50;border:1px solid rgba(76,175,80,.2)}
-
-/* HERO */
-.hero{min-height:85vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:100px 20px 60px;background:radial-gradient(ellipse at 50% 0%,rgba(255,215,0,.03),transparent 70%)}
-.hero-content{max-width:680px}
-.hero h1{font-size:48px;font-weight:900;line-height:1.1;margin-bottom:14px}
-.hero h1 span{background:linear-gradient(135deg,var(--gold),var(--gold2),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero p{color:#888;font-size:15px;margin-bottom:28px;line-height:1.6}
-.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.hero-stats{display:flex;justify-content:center;gap:36px;margin-top:40px;flex-wrap:wrap}
-.stat-item{text-align:center}
-.stat-num{font-size:28px;font-weight:900;color:var(--gold)}
-.stat-label{color:#666;font-size:12px;margin-top:3px}
-
-/* FEATURES */
-.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;max-width:900px;margin:0 auto 40px;padding:0 20px}
-.feature-card{background:var(--card);border:1px solid rgba(255,255,255,.04);border-radius:10px;padding:20px 14px;text-align:center}
-.feature-card .icon{font-size:30px;margin-bottom:8px}
-.feature-card h4{font-size:13px;margin-bottom:4px}
-.feature-card p{color:#888;font-size:11px}
-
-/* SECTION */
-.section{padding:50px 28px;max-width:1200px;margin:0 auto}
-.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
-.section-header h2{font-size:22px;font-weight:800}
-.section-header h2 span{color:var(--gold)}
-.categories{display:flex;gap:6px;flex-wrap:wrap}
-.cat-btn{padding:5px 14px;border-radius:50px;font-size:11px;font-weight:600;border:1px solid rgba(255,255,255,.1);background:transparent;color:#888;cursor:pointer;transition:.3s}
-.cat-btn:hover,.cat-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(255,215,0,.08)}
-.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
-.game-card{background:var(--card);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .3s;border:1px solid rgba(255,255,255,.04)}
-.game-card:hover{transform:translateY(-3px);border-color:rgba(255,215,0,.15);box-shadow:0 8px 24px rgba(255,215,0,.04)}
-.game-img{width:100%;height:120px;object-fit:cover;background:var(--card2)}
-.game-info{padding:12px}
-.game-info h3{font-size:13px;margin-bottom:3px}
-.game-info p{color:#888;font-size:11px;margin-bottom:6px}
-.game-tags{display:flex;gap:4px;flex-wrap:wrap}
-.game-tag{padding:2px 8px;border-radius:4px;font-size:9px;font-weight:600}
+.hero{min-height:80vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:70px 16px 30px}
+.hero h1{font-size:32px;font-weight:900;margin-bottom:10px}
+.hero h1 span{background:linear-gradient(135deg,#FFD700,#FF8C00);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:#888;font-size:13px;margin-bottom:20px}
+.hero-stats{display:flex;gap:24px;justify-content:center;margin-top:24px;flex-wrap:wrap}
+.stat{text-align:center}
+.stat .n{font-size:22px;font-weight:900;color:#FFD700}
+.stat .l{color:#666;font-size:11px}
+.section{padding:24px 16px;max-width:1000px;margin:0 auto}
+.section h2{font-size:18px;margin-bottom:14px}
+.section h2 span{color:#FFD700}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.card{background:#12121c;border-radius:8px;overflow:hidden;cursor:pointer;transition:.3s;border:1px solid rgba(255,255,255,.04)}
+.card:hover{border-color:rgba(255,215,0,.2);transform:translateY(-2px)}
+.card img{width:100%;height:90px;object-fit:cover;background:#1a1a28}
+.card .inf{padding:8px}
+.card .inf h3{font-size:12px;margin-bottom:2px}
+.card .inf p{color:#888;font-size:10px;margin-bottom:4px}
+.tag{padding:2px 6px;border-radius:3px;font-size:9px;font-weight:600;display:inline-block}
 .tag-rtp{background:rgba(76,175,80,.12);color:#4CAF50}
-.tag-type{background:rgba(255,215,0,.08);color:var(--gold)}
-
-/* MODAL */
-.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.88);z-index:2000;justify-content:center;align-items:center;padding:20px;backdrop-filter:blur(4px)}
+.tag-tp{background:rgba(255,215,0,.08);color:#FFD700}
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:200;justify-content:center;align-items:center;padding:16px}
 .modal-overlay.active{display:flex}
-.modal{background:#14141e;border-radius:14px;padding:28px;max-width:440px;width:100%;border:1px solid rgba(255,215,0,.08);max-height:90vh;overflow-y:auto}
-.modal-wide{max-width:600px}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.modal-header h2{font-size:18px}
-.modal-close{width:30px;height:30px;border:none;background:rgba(255,255,255,.06);border-radius:6px;color:#fff;font-size:16px;cursor:pointer;transition:.3s}
-.modal-close:hover{background:rgba(255,0,0,.2);color:#f44336}
-.modal input,.modal select{width:100%;padding:10px 12px;margin:6px 0;background:var(--card2);border:1px solid #2a2a3a;border-radius:6px;color:#fff;font-size:13px;font-family:'Inter',sans-serif}
-.modal input:focus,.modal select:focus{border-color:var(--gold);outline:none}
-.modal .btn{width:100%;margin-top:10px;padding:11px;font-size:13px}
-.modal-link{text-align:center;margin-top:12px;color:#888;font-size:12px}
-.modal-link a{color:var(--gold);cursor:pointer;text-decoration:none}
-.modal-link a:hover{text-decoration:underline}
-
-/* GAME PLAY */
-.game-play{text-align:center}
-.game-play-img{width:100%;max-height:180px;object-fit:cover;border-radius:8px;margin-bottom:14px}
-.game-play h3{font-size:20px;margin-bottom:4px;color:var(--gold)}
-.game-play .desc{color:#888;font-size:12px;margin-bottom:14px;line-height:1.5}
-.game-play .rules{background:var(--card);border-radius:8px;padding:12px;margin-bottom:14px;text-align:left}
-.game-play .rules h4{font-size:12px;color:var(--gold);margin-bottom:6px}
-.game-play .rules p{font-size:11px;color:#aaa;line-height:1.5}
-.bet-input{display:flex;gap:6px;margin:10px 0}
-.bet-input input{flex:1;padding:9px;background:var(--card2);border:1px solid #2a2a3a;border-radius:6px;color:#fff;font-size:14px;font-weight:700;text-align:center}
-.bet-input button{padding:8px 14px;border:none;border-radius:6px;font-weight:700;cursor:pointer;background:rgba(255,255,255,.06);color:#fff;transition:.3s}
-.bet-input button:hover{background:rgba(255,255,255,.12)}
-.game-result{padding:14px;border-radius:8px;font-size:16px;font-weight:700;display:none;margin-top:12px}
+.modal{background:#14141e;border-radius:12px;padding:20px;max-width:400px;width:100%;border:1px solid rgba(255,215,0,.1);max-height:90vh;overflow-y:auto}
+.modal h2{font-size:16px;margin-bottom:12px;text-align:center}
+.modal input,.modal select{width:100%;padding:8px 10px;margin:5px 0;background:#1e1e2c;border:1px solid #2a2a3a;border-radius:6px;color:#fff;font-size:13px}
+.modal input:focus{border-color:#FFD700;outline:none}
+.modal .btn{width:100%;margin-top:8px;padding:9px}
+.modal .link{color:#888;font-size:12px;text-align:center;margin-top:10px}
+.modal .link a{color:#FFD700;cursor:pointer}
+.game-result{padding:10px;border-radius:6px;font-size:13px;font-weight:700;display:none;text-align:center;margin-top:8px}
 .game-result.win{display:block;background:rgba(76,175,80,.12);border:1px solid rgba(76,175,80,.3);color:#4CAF50}
 .game-result.lose{display:block;background:rgba(244,67,54,.12);border:1px solid rgba(244,67,54,.3);color:#f44336}
-
-/* GAME SPECIFIC */
-.crash-canvas{width:100%;height:300px;background:var(--card);border-radius:10px;margin:10px 0;position:relative;overflow:hidden}
-.crash-line{position:absolute;bottom:0;left:0;width:100%;height:100%}
-.crash-multiplier{font-size:42px;font-weight:900;color:var(--gold);margin:10px 0}
-.mines-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:320px;margin:10px auto}
-.mine-cell{aspect-ratio:1;background:var(--card2);border:1px solid #2a2a3a;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:.2s}
-.mine-cell:hover{background:var(--card);border-color:var(--gold)}
-.mine-cell.safe{background:rgba(76,175,80,.15);border-color:#4CAF50}
-.mine-cell.bomb{background:rgba(244,67,54,.15);border-color:#f44336}
-.slots-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:240px;margin:10px auto}
-.slot-cell{aspect-ratio:1;background:var(--card);border:1px solid #2a2a3a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:36px;transition:.3s}
-.slot-cell.spin{animation:spinSlot .3s ease}
-@keyframes spinSlot{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
-
-/* PROFILE */
-.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
-.profile-card{background:var(--card);border-radius:10px;padding:18px;border:1px solid rgba(255,255,255,.04)}
-.profile-card h3{font-size:13px;color:var(--gold);margin-bottom:10px}
-.profile-card p{font-size:12px;color:#aaa;margin-bottom:4px}
-.profile-card .value{color:#fff;font-weight:700}
-.profile-avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin:0 auto 10px;display:block;background:var(--card2)}
-.history-item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px}
-.history-item:last-child{border:none}
-.history-item .win{color:#4CAF50}
-.history-item .lose{color:#f44336}
-
-/* ADMIN */
-.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:20px}
-.admin-card{background:var(--card);border-radius:10px;padding:18px;border:1px solid rgba(255,255,255,.04);text-align:center}
-.admin-card h4{font-size:12px;color:#888;margin-bottom:6px}
-.admin-card .value{font-size:24px;font-weight:900;color:var(--gold)}
-.admin-card .sub{font-size:11px;color:#666;margin-top:4px}
-.chart-box{background:var(--card);border-radius:10px;padding:18px;border:1px solid rgba(255,255,255,.04);margin-bottom:16px}
-.chart-box canvas{max-height:250px}
-.player-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:.2s;font-size:13px}
-.player-row:hover{background:rgba(255,255,255,.02)}
-.player-row .name{font-weight:600}
-.player-row .email{color:#888;font-size:11px}
-.player-row .bal{color:var(--gold);font-weight:700}
-
-/* TOAST */
-.toast{position:fixed;bottom:20px;right:20px;padding:12px 20px;border-radius:8px;color:#fff;font-weight:600;z-index:3000;animation:slideUp .3s ease;font-size:13px;max-width:360px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-.toast.success{background:#1b5e20;border-left:4px solid #4CAF50}
-.toast.error{background:#b71c1c;border-left:4px solid #f44336}
-.toast.info{background:#0d47a1;border-left:4px solid #42a5f5}
-@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-
-/* FOOTER */
-.footer{text-align:center;padding:30px 20px;border-top:1px solid rgba(255,255,255,.04);margin-top:30px}
-.footer p{color:#444;font-size:12px}
-
-/* RESPONSIVE */
-@media(max-width:768px){
-  .header{padding:0 12px;height:56px}
-  .logo{font-size:16px}
-  .logo-icon{width:28px;height:28px;font-size:13px}
-  .nav a{font-size:11px;padding:5px 8px}
-  .nav a:nth-child(4){display:none}
-  .balance-box{font-size:11px;padding:3px 10px}
-  .btn{font-size:11px;padding:6px 12px}
-  .hero h1{font-size:28px}
-  .hero-stats{gap:16px}
-  .games-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
-  .section{padding:30px 12px}
-  .modal{padding:20px}
-  .profile-grid{grid-template-columns:1fr}
-  .features{grid-template-columns:repeat(2,1fr)}
-  .admin-grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:480px){
-  .header-right .btn{padding:4px 8px;font-size:10px}
-  .header-right .btn:nth-child(3){display:none}
-  .games-grid{grid-template-columns:repeat(2,1fr)}
-  .game-img{height:90px}
+.bet-row{display:flex;gap:4px;margin:8px 0}
+.bet-row input{flex:1;padding:7px;background:#1e1e2c;border:1px solid #2a2a3a;border-radius:6px;color:#fff;font-size:14px;font-weight:700;text-align:center}
+.bet-row button{padding:6px 10px;border:none;border-radius:6px;font-weight:700;cursor:pointer;background:rgba(255,255,255,.06);color:#fff}
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.admin-card{background:#12121c;border-radius:8px;padding:14px;text-align:center;border:1px solid rgba(255,255,255,.04)}
+.admin-card h4{font-size:10px;color:#888;margin-bottom:4px}
+.admin-card .v{font-size:18px;font-weight:900;color:#FFD700}
+.chart-box{background:#12121c;border-radius:8px;padding:14px;margin-bottom:16px}
+.chart-box canvas{max-height:180px}
+.prow{display:flex;justify-content:space-between;padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;font-size:12px}
+.prow:hover{background:rgba(255,255,255,.02)}
+.prow .nm{font-weight:600}
+.prow .ml{color:#FFD700}
+.toast{position:fixed;bottom:16px;right:16px;padding:10px 16px;border-radius:6px;color:#fff;font-weight:600;z-index:300;font-size:12px;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+.toast.suc{background:#1b5e20;border-left:3px solid #4CAF50}
+.toast.err{background:#b71c1c;border-left:3px solid #f44336}
+.toast.inf{background:#0d47a1;border-left:3px solid #42a5f5}
+.footer{text-align:center;padding:20px;border-top:1px solid rgba(255,255,255,.04);margin-top:20px}
+.footer p{color:#444;font-size:11px}
+@media(max-width:600px){
+  .header{padding:0 10px;height:50px}
+  .logo{font-size:15px}
+  .nav a{font-size:10px;padding:4px 6px}
+  .hright .btn{font-size:10px;padding:4px 8px}
+  .hero h1{font-size:22px}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .card img{height:70px}
 }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="header">
-  <a class="logo" href="#"><div class="logo-icon">🎰</div> FELIXBET</a>
+  <div class="logo">🎰 FELIXBET</div>
   <nav class="nav">
-    <a class="active" onclick="showTab('home')">Início</a>
-    <a onclick="showTab('games')">Jogos</a>
-    <a onclick="showTab('profile')">Conta</a>
-    <a onclick="showTab('admin')" id="adminTab" style="display:none">Admin</a>
+    <a class="active" onclick="mostrar('home')">Início</a>
+    <a onclick="mostrar('games')">Jogos</a>
+    <a onclick="mostrar('conta')">Conta</a>
+    <a id="admTab" onclick="mostrar('admin')" style="display:none">Admin</a>
   </nav>
-  <div class="header-right">
-    <div class="balance-box"><small>SALDO</small><span id="headerBalance">R$ 0,00</span></div>
-    <button class="btn btn-primary btn-sm" onclick="showDeposit()">Depositar</button>
-    <button class="btn btn-dark btn-sm" onclick="showWithdraw()">Sacar</button>
-    <button class="btn btn-primary" id="authBtn" onclick="showLogin()">Entrar</button>
+  <div class="hright">
+    <div class="saldo"><small>SALDO</small><span id="hSaldo">R$ 0,00</span></div>
+    <button class="btn btn-gold" onclick="abrirDep()">Depositar</button>
+    <button class="btn btn-dark" onclick="abrirSaq()">Sacar</button>
+    <button class="btn btn-gold" id="authBtn" onclick="abrirLogin()">Entrar</button>
   </div>
 </header>
 
-<!-- CONTEÚDO PRINCIPAL -->
-<div id="mainContent">
-
-<!-- HOME -->
-<section class="hero" id="tab-home">
-  <div class="hero-content">
+<section class="hero" id="pg-home">
+  <div>
     <h1>A Casa de Apostas<br><span>Número 1 do Brasil</span></h1>
-    <p>🎮 Crash, Mines, Fortune Tiger e mais! • 🚀 Saques em até 2h • 🎁 Bônus de R$ 15,00<br>Depósito mínimo de <strong style="color:var(--gold)">R$ 1,00</strong> • Saque a partir de <strong style="color:var(--gold)">R$ 50,00</strong></p>
-    <div class="hero-btns">
-      <button class="btn btn-primary" style="padding:14px 36px;font-size:15px" onclick="showRegister()">🎰 GANHE R$ 15 GRÁTIS</button>
-      <button class="btn btn-dark" style="padding:14px 28px;font-size:15px" onclick="showTab('games')">Ver Jogos</button>
-    </div>
+    <p>🎮 Crash, Mines, Tigrinho e 55+ jogos • 🚀 Saques rápidos • 🎁 Bônus de R$ 15</p>
+    <button class="btn btn-gold" style="padding:12px 28px;font-size:14px" onclick="abrirCad()">🎰 GANHE R$ 15 GRÁTIS</button>
     <div class="hero-stats">
-      <div class="stat-item"><div class="stat-num" id="statUsers">0</div><div class="stat-label">Jogadores</div></div>
-      <div class="stat-item"><div class="stat-num">55+</div><div class="stat-label">Jogos</div></div>
-      <div class="stat-item"><div class="stat-num" id="statPagos">R$ 0</div><div class="stat-label">Prêmios Pagos</div></div>
+      <div class="stat"><div class="n" id="stUsers">0</div><div class="l">Jogadores</div></div>
+      <div class="stat"><div class="n">55+</div><div class="l">Jogos</div></div>
+      <div class="stat"><div class="n" id="stPremios">R$ 0</div><div class="l">Prêmios Pagos</div></div>
     </div>
   </div>
 </section>
 
-<div class="features">
-  <div class="feature-card"><div class="icon">🎁</div><h4>Bônus R$ 15</h4><p>Ao criar sua conta</p></div>
-  <div class="feature-card"><div class="icon">💸</div><h4>Saque Rápido</h4><p>Em até 2 horas</p></div>
-  <div class="feature-card"><div class="icon">🎮</div><h4>Jogos Reais</h4><p>Crash, Mines, Tigrinho</p></div>
-  <div class="feature-card"><div class="icon">🔒</div><h4>100% Seguro</h4><p>Dados protegidos</p></div>
-</div>
-
-<!-- GAMES -->
-<section class="section" id="tab-games" style="display:none">
-  <div class="section-header">
-    <h2>🎲 Nossos <span>Jogos</span></h2>
-    <div class="categories">
-      <button class="cat-btn active" onclick="filterGames('all',this)">Todos</button>
-      <button class="cat-btn" onclick="filterGames('crash',this)">Crash</button>
-      <button class="cat-btn" onclick="filterGames('mines',this)">Mines</button>
-      <button class="cat-btn" onclick="filterGames('slots',this)">Slots</button>
-      <button class="cat-btn" onclick="filterGames('tigre',this)">Tigrinho</button>
-      <button class="cat-btn" onclick="filterGames('cards',this)">Cartas</button>
-      <button class="cat-btn" onclick="filterGames('dice',this)">Dados</button>
-    </div>
+<section class="section" id="pg-games" style="display:none">
+  <h2>🎲 Nossos <span>Jogos</span></h2>
+  <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px" id="filtros">
+    <button class="btn btn-dark" style="font-size:10px" onclick="filtrar('all',this)">Todos</button>
+    <button class="btn btn-dark" style="font-size:10px" onclick="filtrar('crash',this)">Crash</button>
+    <button class="btn btn-dark" style="font-size:10px" onclick="filtrar('mines',this)">Mines</button>
+    <button class="btn btn-dark" style="font-size:10px" onclick="filtrar('slots',this)">Slots</button>
+    <button class="btn btn-dark" style="font-size:10px" onclick="filtrar('tigre',this)">Tigrinho</button>
+    <button class="btn btn-dark" style="font-size:10px" onclick="filtrar('dice',this)">Dados</button>
+    <button class="btn btn-dark" style="font-size:10px" onclick="filtrar('cards',this)">Cartas</button>
   </div>
-  <div class="games-grid" id="gamesGrid"></div>
+  <div class="grid" id="gamesGrid"></div>
 </section>
 
-<!-- PROFILE -->
-<section class="section" id="tab-profile" style="display:none">
-  <div class="section-header"><h2>👤 Minha <span>Conta</span></h2></div>
-  <div id="profileContainer"></div>
+<section class="section" id="pg-conta" style="display:none">
+  <h2>👤 Minha <span>Conta</span></h2>
+  <div id="contaContainer"></div>
 </section>
 
-<!-- ADMIN -->
-<section class="section" id="tab-admin" style="display:none">
-  <div class="section-header"><h2>👑 Painel <span>Administrativo</span></h2></div>
+<section class="section" id="pg-admin" style="display:none">
+  <h2>👑 Painel <span>Administrativo</span></h2>
   <div id="adminContainer"></div>
 </section>
 
-</div>
-
-<!-- FOOTER -->
-<footer class="footer">
-  <p>© 2025 FelixBet - Jogue com responsabilidade. Proibido para menores de 18 anos.</p>
-</footer>
+<footer class="footer"><p>© 2025 FelixBet - Jogue com responsabilidade. Proibido para menores de 18 anos.</p></footer>
 
 <!-- MODAIS -->
-<div class="modal-overlay" id="loginModal">
+<div class="modal-overlay" id="modalLogin">
   <div class="modal">
-    <div class="modal-header"><h2>🔐 Entrar</h2><button class="modal-close" onclick="closeModal('loginModal')">✕</button></div>
-    <input type="email" id="loginEmail" placeholder="Email">
-    <input type="password" id="loginPassword" placeholder="Senha">
-    <button class="btn btn-primary" onclick="login()">Entrar</button>
-    <p class="modal-link">Não tem conta? <a onclick="showRegister()">Cadastre-se e ganhe R$ 15</a></p>
+    <h2>🔐 Entrar</h2>
+    <input type="email" id="logEmail" placeholder="Email">
+    <input type="password" id="logSenha" placeholder="Senha">
+    <button class="btn btn-gold" onclick="logar()">Entrar</button>
+    <div class="link">Não tem conta? <a onclick="fecharModal('modalLogin');abrirCad()">Cadastre-se</a></div>
   </div>
 </div>
 
-<div class="modal-overlay" id="registerModal">
+<div class="modal-overlay" id="modalCad">
   <div class="modal">
-    <div class="modal-header"><h2>🎁 Criar Conta - R$ 15 Grátis</h2><button class="modal-close" onclick="closeModal('registerModal')">✕</button></div>
-    <div style="background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.15);border-radius:8px;padding:10px;text-align:center;margin-bottom:14px">
-      <strong style="color:var(--gold);font-size:16px">🎉 BÔNUS DE R$ 15,00</strong>
+    <h2>🎁 Criar Conta - R$ 15 Grátis</h2>
+    <div style="background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.15);border-radius:6px;padding:8px;text-align:center;margin-bottom:10px;font-size:13px;color:#FFD700;font-weight:700">🎉 BÔNUS DE R$ 15,00</div>
+    <input type="text" id="cadNome" placeholder="Nome completo">
+    <input type="email" id="cadEmail" placeholder="Email">
+    <input type="text" id="cadCpf" placeholder="CPF (só números)" maxlength="11">
+    <input type="date" id="cadNasc">
+    <input type="password" id="cadSenha" placeholder="Senha (mín. 6 caracteres)">
+    <input type="password" id="cadConf" placeholder="Confirmar senha">
+    <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:#888;margin:6px 0"><input type="checkbox" id="cadTermos"> Tenho 18+ e aceito os Termos</label>
+    <button class="btn btn-gold" onclick="cadastrar()">🎰 Criar Conta</button>
+    <div class="link">Já tem conta? <a onclick="fecharModal('modalCad');abrirLogin()">Entrar</a></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalDep">
+  <div class="modal">
+    <h2>💰 Depositar</h2>
+    <p style="color:#888;font-size:12px;text-align:center">Mínimo: <strong style="color:#FFD700">R$ 1,00</strong> • Cada R$ 1 = 2 jogadas</p>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;margin:8px 0">
+      <button class="btn btn-dark" style="font-size:10px" onclick="setVal(5)">R$ 5</button>
+      <button class="btn btn-dark" style="font-size:10px" onclick="setVal(10)">R$ 10</button>
+      <button class="btn btn-dark" style="font-size:10px" onclick="setVal(20)">R$ 20</button>
+      <button class="btn btn-dark" style="font-size:10px" onclick="setVal(50)">R$ 50</button>
+      <button class="btn btn-dark" style="font-size:10px" onclick="setVal(100)">R$ 100</button>
     </div>
-    <input type="text" id="regName" placeholder="Nome completo">
-    <input type="email" id="regEmail" placeholder="Email">
-    <input type="text" id="regCpf" placeholder="CPF (apenas números)" maxlength="11">
-    <input type="date" id="regBirth" placeholder="Data de nascimento">
-    <input type="password" id="regPassword" placeholder="Senha (mín. 6 caracteres)">
-    <input type="password" id="regConfirm" placeholder="Confirmar senha">
-    <label style="display:flex;align-items:center;gap:8px;margin:8px 0;font-size:12px;color:#888"><input type="checkbox" id="regTerms"> Declaro que tenho 18+ anos e aceito os Termos</label>
-    <button class="btn btn-primary" onclick="register()">🎰 Criar Conta e Ganhar R$ 15</button>
-    <p class="modal-link">Já tem conta? <a onclick="showLogin()">Entrar</a></p>
+    <input type="number" id="depVal" placeholder="Valor (R$)" min="1" step="1">
+    <button class="btn btn-gold" onclick="depositar()">💰 Depositar</button>
   </div>
 </div>
 
-<div class="modal-overlay" id="depositModal">
+<div class="modal-overlay" id="modalSaq">
   <div class="modal">
-    <div class="modal-header"><h2>💰 Depositar</h2><button class="modal-close" onclick="closeModal('depositModal')">✕</button></div>
-    <p style="color:#888;font-size:13px;margin-bottom:10px;text-align:center">Mínimo: <strong style="color:var(--gold)">R$ 1,00</strong> • Cada R$ 1 = 2 jogadas</p>
-    <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
-      <button class="btn btn-dark btn-sm" onclick="setDeposit(5)">R$ 5</button>
-      <button class="btn btn-dark btn-sm" onclick="setDeposit(10)">R$ 10</button>
-      <button class="btn btn-dark btn-sm" onclick="setDeposit(20)">R$ 20</button>
-      <button class="btn btn-dark btn-sm" onclick="setDeposit(50)">R$ 50</button>
-      <button class="btn btn-dark btn-sm" onclick="setDeposit(100)">R$ 100</button>
-    </div>
-    <input type="number" id="depositAmount" placeholder="Valor (R$)" min="1" step="1">
-    <button class="btn btn-primary" onclick="deposit()">💰 Depositar</button>
+    <h2>💸 Sacar</h2>
+    <p style="color:#f44336;font-size:11px;text-align:center;margin-bottom:6px">⚠️ Saque mínimo: <strong style="color:#FFD700">R$ 50,00</strong></p>
+    <input type="number" id="saqVal" placeholder="Valor do saque" min="50">
+    <input type="text" id="saqPix" placeholder="Chave PIX (CPF/email/telefone)">
+    <div style="background:#1a1a28;border-radius:4px;padding:8px;font-size:10px;color:#888;margin:6px 0">Chave aleatória: <strong style="color:#FFD700" id="pixKey">-</strong></div>
+    <button class="btn btn-gold" onclick="sacar()">💸 Solicitar Saque</button>
   </div>
 </div>
 
-<div class="modal-overlay" id="withdrawModal">
-  <div class="modal">
-    <div class="modal-header"><h2>💸 Sacar</h2><button class="modal-close" onclick="closeModal('withdrawModal')">✕</button></div>
-    <p style="color:#f44336;font-size:12px;margin-bottom:10px;text-align:center">⚠️ Saque mínimo: <strong style="color:var(--gold)">R$ 50,00</strong></p>
-    <input type="number" id="withdrawAmount" placeholder="Valor do saque" min="50" step="1">
-    <input type="text" id="withdrawPix" placeholder="Chave PIX (CPF, email ou telefone)">
-    <div style="background:var(--card);border-radius:6px;padding:10px;font-size:11px;color:#888;margin:8px 0">
-      Chave PIX aleatória gerada: <strong style="color:var(--gold)" id="pixKeyDisplay">-</strong>
-    </div>
-    <button class="btn btn-primary" onclick="withdraw()">💸 Solicitar Saque</button>
-  </div>
-</div>
-
-<!-- GAME PLAY MODAL -->
-<div class="modal-overlay" id="gameModal">
-  <div class="modal" style="max-width:500px">
-    <div class="modal-header"><h2 id="gameModalTitle">Jogar</h2><button class="modal-close" onclick="closeGameModal()">✕</button></div>
-    <div class="game-play" id="gamePlayContent">
-      <img id="gameModalImg" class="game-play-img" src="">
-      <h3 id="gameModalName">Nome</h3>
-      <p class="desc" id="gameModalDesc">Descrição</p>
-      <div class="rules" id="gameModalRules">
-        <h4>📖 Regras</h4>
-        <p id="gameModalRulesText">Regras</p>
+<div class="modal-overlay" id="modalJogo">
+  <div class="modal" style="max-width:480px">
+    <h2 id="jogoTitle">Jogar</h2>
+    <div style="text-align:center">
+      <img id="jogoImg" style="width:100%;max-height:150px;object-fit:cover;border-radius:6px;margin-bottom:10px">
+      <h3 id="jogoNome" style="color:#FFD700;font-size:16px"></h3>
+      <p id="jogoDesc" style="color:#888;font-size:11px;margin-bottom:10px"></p>
+      <div style="background:#1a1a28;border-radius:6px;padding:10px;text-align:left;margin-bottom:10px;font-size:11px;color:#aaa" id="jogoRegras"></div>
+      <div id="jogoArea"></div>
+      <div class="bet-row">
+        <input type="number" id="apostaVal" value="1" min="0.50" step="0.50">
+        <button onclick="metade()">½</button>
+        <button onclick="dobro()">2×</button>
+        <button onclick="maximo()">MAX</button>
       </div>
-      <div id="gameSpecificArea"></div>
-      <div class="bet-input">
-        <input type="number" id="gameBetAmount" placeholder="Valor" min="0.50" step="0.50" value="1">
-        <button onclick="halfBet()">½</button>
-        <button onclick="doubleBet()">2×</button>
-        <button onclick="maxBet()">MAX</button>
-      </div>
-      <button class="btn btn-primary" onclick="playGame()" id="playBtn" style="padding:12px;font-size:15px">🎮 JOGAR</button>
-      <div class="game-result" id="gameResult"></div>
+      <button class="btn btn-gold" onclick="jogar()" style="padding:10px;font-size:14px">🎮 JOGAR</button>
+      <div class="game-result" id="jogoResult"></div>
     </div>
   </div>
 </div>
 
 <script>
-// ========== CONFIG ==========
-const CFG = {
-  welcomeBonus: 15,
-  minDeposit: 1,
-  minWithdraw: 50,
-  playsPerReal: 2
-};
+// ========== DADOS ==========
+let token = localStorage.getItem('fb_token');
+let user = null;
+let jogoAtual = null;
+let usuarios = JSON.parse(localStorage.getItem('fb_usuarios') || '[]');
+let admin = JSON.parse(localStorage.getItem('fb_admin') || '{"saldo":0,"depositos":0,"saques":0,"premios":0}');
+let grafico = null;
+
 const ADMIN_EMAIL = 'admin@felixbet.com';
-const ADMIN_PASS = 'AdminFelix@2024!';
+const ADMIN_SENHA = 'AdminFelix@2024!';
+const BONUS = 15;
+const MIN_SAQUE = 50;
 
-// ========== ESTADO ==========
-let token = localStorage.getItem('felixbet_token');
-let currentUser = null;
-let currentGame = null;
-let users = JSON.parse(localStorage.getItem('felixbet_users') || '[]');
-let adminData = JSON.parse(localStorage.getItem('felixbet_admin') || '{"balance":0,"totalDeposits":0,"totalWithdraws":0,"totalPrizes":0}');
-let chartInstance = null;
-
-// ========== IMAGENS ==========
-const IMG = {
-  crash: ['https://images.unsplash.com/photo-1636819488524-1f019c5f84c2?w=400&h=250&fit=crop','https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=250&fit=crop'],
-  mines: ['https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=250&fit=crop','https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=250&fit=crop'],
-  slots: ['https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=400&h=250&fit=crop','https://images.unsplash.com/photo-1600469984476-15de9f073c3e?w=400&h=250&fit=crop'],
-  tigre: ['https://images.unsplash.com/photo-1564069114553-7215e1ff1890?w=400&h=250&fit=crop','https://images.unsplash.com/photo-1601370690183-1c7796ecec61?w=400&h=250&fit=crop'],
-  cards: ['https://images.unsplash.com/photo-1556376633-32576f82cc44?w=400&h=250&fit=crop'],
-  dice: ['https://images.unsplash.com/photo-1605540436563-5bca919ae766?w=400&h=250&fit=crop'],
-  plinko: ['https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=250&fit=crop'],
-  default: ['https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=400&h=250&fit=crop']
+const IMGS = {
+  crash: 'https://images.unsplash.com/photo-1636819488524-1f019c5f84c2?w=300&h=200&fit=crop',
+  mines: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=300&h=200&fit=crop',
+  slots: 'https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=300&h=200&fit=crop',
+  tigre: 'https://images.unsplash.com/photo-1564069114553-7215e1ff1890?w=300&h=200&fit=crop',
+  dice: 'https://images.unsplash.com/photo-1605540436563-5bca919ae766?w=300&h=200&fit=crop',
+  cards: 'https://images.unsplash.com/photo-1556376633-32576f82cc44?w=300&h=200&fit=crop',
+  plinko: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=300&h=200&fit=crop',
+  outro: 'https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=300&h=200&fit=crop'
 };
-function getImg(t){const p=IMG[t]||IMG.default;return p[Math.floor(Math.random()*p.length)]}
 
-// ========== 55 JOGOS ==========
-const GAMES = [];
-const TYPES = ['crash','mines','slots','tigre','cards','dice','plinko'];
-const PREFIX = ['Fruit','Gold','Lucky','Mega','Super','Ultra','Diamond','Royal','Classic','VIP','Pro','Deluxe','Express','Turbo','Legend','Champion','Fortune','Star','Magic','Mystic','Wild','Thunder','Blaze','Crown','Empire','Neon','Cosmic','Solar','Lunar','Golden','Silver','Platinum','Tropical','Arctic','Fury','Storm','Crystal','Shadow','Phoenix','Dragon','Tiger','Panther','Falcon','Eagle','Wolf','Bear','Fox','Owl','Savage','Thunder'];
-const SUFFIX = ['Crash','Mines','Slots','Tiger','Dice','Wheel','Rush','Poker','Keno','Plinko','Blackjack','Baccarat','Double','Tower','Limbo'];
+const REGRAS = {
+  crash: 'O avião decola e o multiplicador sobe. Clique em SACAR antes do crash para ganhar. Se crashar, perde.',
+  mines: 'Grid 5x5 com bombas. Cada quadrado seguro revela um diamante. Uma bomba = perde tudo.',
+  slots: '3 rolos, 3 linhas. Combine 3 símbolos iguais para ganhar. 7️⃣ paga 50x, 💰 paga 20x.',
+  tigre: 'Fortune Tiger 3x3. O Tigre é wild e substitui qualquer símbolo. 3 iguais = prêmio. Bônus com multiplicador até 10x!',
+  dice: 'Dois dados. Escolha acima ou abaixo de 7. Acertou = 2x o valor.',
+  cards: 'Chegue em 21 sem passar. Dealer compra até 17. Blackjack paga 3x.',
+  plinko: 'Bolinha cai pelos pinos. Centro paga mais. Até 100x!'
+};
+
+// GERAR 55 JOGOS
+const TODOS_JOGOS = [];
+const TIPOS = ['crash','mines','slots','tigre','dice','cards','plinko'];
+const NOMES = ['Fruit','Gold','Lucky','Mega','Super','Ultra','Diamond','Royal','Classic','VIP','Pro','Deluxe','Express','Turbo','Legend','Champion','Fortune','Star','Magic','Mystic','Wild','Thunder','Blaze','Crown','Empire','Neon','Cosmic','Solar','Lunar','Golden','Silver','Platinum','Tropical','Arctic','Fury','Storm','Crystal','Shadow','Phoenix','Dragon','Tiger','Panther','Falcon','Eagle','Wolf','Bear','Fox','Owl','Savage','Thunder','Storm','Fury','Blaze'];
+const SUF = ['Crash','Mines','Slots','Tiger','Dice','Wheel','Rush','Poker','Keno','Plinko','21','Baccarat','Double'];
 
 for(let i=0;i<55;i++){
-  const t=TYPES[i%TYPES.length];
-  const n=`${PREFIX[i%PREFIX.length]} ${SUFFIX[i%SUFFIX.length]}`;
-  GAMES.push({id:i+1,name:n,type:t,rtp:(91+Math.random()*7).toFixed(1),img:getImg(t),desc:`Jogue ${n} e ganhe prêmios reais`,rules:getRules(t)});
-}
-function getRules(t){
-  const r={
-    crash:'O avião decola e o multiplicador aumenta. Clique em "Sacar" antes do crash para ganhar. Se crashar antes, você perde a aposta.',
-    mines:'Grid 5×5 com bombas e diamantes. Clique nos quadrados para revelar. Cada diamante aumenta o multiplicador. Uma bomba = game over.',
-    slots:'Gire os rolos 3×3. Forme combinações iguais nas linhas para ganhar. Quanto mais raro o símbolo, maior o prêmio.',
-    tigre:'Fortune Tiger: slots 3×3 com tema chinês. O Tigre (Wild) substitui símbolos. 3 símbolos iguais pagam. Bônus de respin com multiplicador até 10×!',
-    cards:'Jogo de cartas. Chegue o mais próximo de 21 sem passar. Dealer compra até 17. Blackjack paga 3×.',
-    dice:'Dois dados são lançados. Escolha acima ou abaixo de 7. Acertou = 2× o valor apostado.',
-    plinko:'A bolinha cai por uma pirâmide de pinos. Prêmios de até 100× no centro.'
-  };
-  return r[t]||'Faça sua aposta e boa sorte!';
+  const t = TIPOS[i%TIPOS.length];
+  TODOS_JOGOS.push({
+    id:i+1,
+    nome:`${NOMES[i%NOMES.length]} ${SUF[i%SUF.length]}`,
+    tipo:t,
+    rtp:(91+Math.random()*7).toFixed(1),
+    img:IMGS[t]||IMGS.outro,
+    regras:REGRAS[t]||'Faça sua aposta e boa sorte!'
+  });
 }
 
 // ========== FUNÇÕES ==========
-function toast(m,t='info'){
+function toast(m,t='inf'){
   const e=document.createElement('div');
   e.className=`toast ${t}`;e.textContent=m;
   document.body.appendChild(e);
-  setTimeout(()=>e.remove(),3500);
+  setTimeout(()=>e.remove(),3000);
 }
-function closeModal(id){document.getElementById(id).classList.remove('active')}
-function showLogin(){closeModal('registerModal');document.getElementById('loginModal').classList.add('active')}
-function showRegister(){closeModal('loginModal');document.getElementById('registerModal').classList.add('active')}
-function showDeposit(){if(!getUser()){toast('Faça login','error');showLogin();return}
-  document.getElementById('depositModal').classList.add('active')}
-function showWithdraw(){if(!getUser()){toast('Faça login','error');showLogin();return}
-  document.getElementById('withdrawModal').classList.add('active')
-  document.getElementById('pixKeyDisplay').textContent=generatePixKey()}
-function setDeposit(v){document.getElementById('depositAmount').value=v}
 
-function generatePixKey(){
-  const t='0123456789abcdef';
-  let k='';
-  for(let i=0;i<32;i++){k+=t[Math.floor(Math.random()*t.length)];if(i%8===7&&i<31)k+='-'}
+function fecharModal(id){document.getElementById(id).classList.remove('active')}
+
+function abrirLogin(){fecharModal('modalCad');document.getElementById('modalLogin').classList.add('active')}
+function abrirCad(){fecharModal('modalLogin');document.getElementById('modalCad').classList.add('active')}
+function abrirDep(){
+  if(!getUser()){toast('Faça login primeiro','err');abrirLogin();return}
+  document.getElementById('modalDep').classList.add('active')
+}
+function abrirSaq(){
+  if(!getUser()){toast('Faça login primeiro','err');abrirLogin();return}
+  document.getElementById('pixKey').textContent=gerarPix();
+  document.getElementById('modalSaq').classList.add('active')
+}
+
+function gerarPix(){
+  let k='';const h='0123456789abcdef';
+  for(let i=0;i<32;i++){k+=h[Math.floor(Math.random()*16)];if(i%8===7&&i<31)k+='-'}
   return k;
 }
 
+function setVal(v){document.getElementById('depVal').value=v}
+
 function getUser(){
-  if(!token||!currentUser)return null;
-  if(currentUser.isAdmin)return currentUser;
-  const u=users.find(x=>x.id===token);
-  if(u){currentUser=u;return u}
+  if(!token||!user)return null;
+  if(user.admin)return user;
+  const u=usuarios.find(x=>x.id===token);
+  if(u){user=u;return u}
   return null;
 }
 
-function saveUsers(){localStorage.setItem('felixbet_users',JSON.stringify(users))}
-function saveAdmin(){localStorage.setItem('felixbet_admin',JSON.stringify(adminData))}
+function salvarU(){localStorage.setItem('fb_usuarios',JSON.stringify(usuarios))}
+function salvarA(){localStorage.setItem('fb_admin',JSON.stringify(admin))}
 
-function getBalance(){
+function getSaldo(){
   const u=getUser();
   if(!u)return 0;
-  return u.isAdmin?adminData.balance:(u.balance||0);
+  return u.admin?admin.saldo:(u.saldo||0);
 }
 
-function addBalance(amt){
+function addSaldo(v){
   const u=getUser();
   if(!u)return;
-  if(u.isAdmin){
-    adminData.balance+=amt;
-    saveAdmin();
-    updateUI();
-    return;
-  }
-  const idx=users.findIndex(x=>x.id===u.id);
-  if(idx>-1){
-    users[idx].balance=(users[idx].balance||0)+amt;
-    if(amt>0)users[idx].totalDeposits=(users[idx].totalDeposits||0)+amt;
-    currentUser=users[idx];
-    saveUsers();
-    updateUI();
+  if(u.admin){admin.saldo+=v;salvarA();atualizarUI();return}
+  const i=usuarios.findIndex(x=>x.id===u.id);
+  if(i>-1){
+    usuarios[i].saldo=(usuarios[i].saldo||0)+v;
+    if(v>0)usuarios[i].totalDep=(usuarios[i].totalDep||0)+v;
+    user=usuarios[i];salvarU();atualizarUI();
   }
 }
 
-function updateUI(){
-  const bal=getBalance();
-  document.getElementById('headerBalance').textContent=`R$ ${bal.toFixed(2)}`;
-  const btn=document.getElementById('authBtn');
+function atualizarUI(){
+  const s=getSaldo();
+  document.getElementById('hSaldo').textContent=`R$ ${s.toFixed(2)}`;
+  const b=document.getElementById('authBtn');
   const u=getUser();
   if(u){
-    btn.textContent=u.isAdmin?'👑 Admin':`👤 ${u.name.split(' ')[0]}`;
-    btn.onclick=logout;btn.className='btn btn-dark';
-    document.getElementById('adminTab').style.display=u.isAdmin?'':'none';
-  }else{
-    btn.textContent='Entrar';btn.onclick=showLogin;btn.className='btn btn-primary';
-    document.getElementById('adminTab').style.display='none';
+    b.textContent=u.admin?'👑 Admin':`👤 ${u.nome.split(' ')[0]}`;
+    b.onclick=sair;b.className='btn btn-dark';
+    document.getElementById('admTab').style.display=u.admin?'':'none';
+  } else {
+    b.textContent='Entrar';b.onclick=abrirLogin;b.className='btn btn-gold';
+    document.getElementById('admTab').style.display='none';
   }
-  document.getElementById('statUsers').textContent=users.length;
-  document.getElementById('statPagos').textContent=`R$ ${adminData.totalPrizes.toFixed(2)}`;
+  document.getElementById('stUsers').textContent=usuarios.length;
+  document.getElementById('stPremios').textContent=`R$ ${(admin.premios||0).toFixed(2)}`;
 }
 
-function logout(){
-  token=null;currentUser=null;
-  localStorage.removeItem('felixbet_token');
-  updateUI();toast('Desconectado','info');
-  showTab('home');
+function sair(){
+  token=null;user=null;
+  localStorage.removeItem('fb_token');
+  atualizarUI();toast('Desconectado','inf');
+  mostrar('home');
 }
 
-function showTab(tab){
-  ['home','games','profile','admin'].forEach(t=>{
-    document.getElementById(`tab-${t}`).style.display=t===tab?'':'none';
+function mostrar(pg){
+  ['home','games','conta','admin'].forEach(p=>{
+    document.getElementById(`pg-${p}`).style.display=p===pg?'':'none';
   });
-  if(tab==='profile'&&getUser())renderProfile();
-  if(tab==='admin'&&getUser()&&getUser().isAdmin)renderAdmin();
-  if(tab==='admin'&&(!getUser()||!getUser().isAdmin)){
-    toast('Acesso restrito','error');showTab('home');
-  }
-  document.querySelectorAll('.nav a').forEach(a=>a.classList.remove('active'));
-  const idx={home:0,games:1,profile:2,admin:3}[tab]||0;
-  document.querySelectorAll('.nav a')[idx].classList.add('active');
+  if(pg==='conta'&&getUser())renderConta();
+  if(pg==='admin'&&getUser()&&getUser().admin)renderAdmin();
+  if(pg==='admin'&&(!getUser()||!getUser().admin)){toast('Acesso restrito','err');mostrar('home')}
+  document.querySelectorAll('.nav a').forEach((a,i)=>{
+    a.classList.toggle('active',['home','games','conta','admin'][i]===pg);
+  });
 }
 
-// ========== AUTENTICAÇÃO ==========
-function register(){
-  const n=document.getElementById('regName').value;
-  const e=document.getElementById('regEmail').value;
-  const c=document.getElementById('regCpf').value;
-  const b=document.getElementById('regBirth').value;
-  const p=document.getElementById('regPassword').value;
-  const cf=document.getElementById('regConfirm').value;
-  const t=document.getElementById('regTerms').checked;
-  if(!n||!e||!c||!b||!p){toast('Preencha todos os campos','error');return}
-  if(p!==cf){toast('Senhas não conferem','error');return}
-  if(p.length<6){toast('Mínimo 6 caracteres','error');return}
-  if(c.length!==11){toast('CPF inválido','error');return}
+// ========== CADASTRO ==========
+function cadastrar(){
+  const n=document.getElementById('cadNome').value;
+  const e=document.getElementById('cadEmail').value;
+  const c=document.getElementById('cadCpf').value;
+  const b=document.getElementById('cadNasc').value;
+  const p=document.getElementById('cadSenha').value;
+  const cf=document.getElementById('cadConf').value;
+  const t=document.getElementById('cadTermos').checked;
+  if(!n||!e||!c||!b||!p){toast('Preencha todos os campos','err');return}
+  if(p!==cf){toast('Senhas não conferem','err');return}
+  if(p.length<6){toast('Mínimo 6 caracteres','err');return}
+  if(c.length!==11||isNaN(c)){toast('CPF inválido','err');return}
   const idade=Math.floor((Date.now()-new Date(b).getTime())/(365.25*86400000));
-  if(idade<18){toast('Você precisa ter 18+','error');return}
-  if(!t){toast('Aceite os termos','error');return}
-  if(users.find(x=>x.email===e)){toast('Email já cadastrado','error');return}
-  if(users.find(x=>x.cpf===c)){toast('CPF já cadastrado','error');return}
+  if(idade<18){toast('Você precisa ter 18+','err');return}
+  if(!t){toast('Aceite os termos','err');return}
+  if(usuarios.find(x=>x.email===e)){toast('Email já cadastrado','err');return}
+  if(usuarios.find(x=>x.cpf===c)){toast('CPF já cadastrado','err');return}
   
-  const user={
-    id:Date.now().toString(),name:n,email:e,cpf:c,birth:b,password:p,
-    balance:CFG.welcomeBonus,photo:'',phone:'',
-    totalDeposits:0,totalWithdraws:0,totalBets:0,totalWins:0,
-    history:[{type:'bonus',amount:CFG.welcomeBonus,date:new Date().toLocaleString('pt-BR'),desc:'Bônus de boas-vindas'}],
-    createdAt:new Date().toISOString()
+  const uu={
+    id:Date.now().toString(),nome:n,email:e,cpf:c,nasc:b,senha:p,
+    saldo:BONUS,telefone:'',foto:'',
+    totalDep:0,totalSaq:0,totalBet:0,totalWin:0,
+    historico:[{tipo:'bonus',valor:BONUS,data:new Date().toLocaleString('pt-BR'),desc:'Bônus de boas-vindas'}],
+    criado:new Date().toISOString()
   };
-  users.push(user);saveUsers();
+  usuarios.push(uu);salvarU();
   
-  // Bônus sai do admin
-  adminData.balance-=CFG.welcomeBonus;
-  adminData.totalPrizes=(adminData.totalPrizes||0)+CFG.welcomeBonus;
-  saveAdmin();
+  admin.saldo-=BONUS;
+  admin.premios=(admin.premios||0)+BONUS;
+  salvarA();
   
-  token=user.id;currentUser=user;
-  localStorage.setItem('felixbet_token',token);
-  closeModal('registerModal');
-  updateUI();
-  toast(`🎉 Conta criada! R$ ${CFG.welcomeBonus},00 de bônus!`,'success');
-  showTab('games');
+  token=uu.id;user=uu;
+  localStorage.setItem('fb_token',token);
+  fecharModal('modalCad');
+  atualizarUI();
+  toast(`🎉 Conta criada! R$ ${BONUS},00 de bônus!`,'suc');
+  mostrar('games');
 }
 
-function login(){
-  const e=document.getElementById('loginEmail').value;
-  const p=document.getElementById('loginPassword').value;
-  if(!e||!p){toast('Preencha todos os campos','error');return}
-  if(e===ADMIN_EMAIL&&p===ADMIN_PASS){
-    token='admin';currentUser={id:'admin',name:'Administrador',email:ADMIN_EMAIL,isAdmin:true};
-    localStorage.setItem('felixbet_token',token);
-    closeModal('loginModal');updateUI();
-    toast('👑 Modo Administrador','info');
-    showTab('admin');
-    return;
+function logar(){
+  const e=document.getElementById('logEmail').value;
+  const p=document.getElementById('logSenha').value;
+  if(!e||!p){toast('Preencha os campos','err');return}
+  if(e===ADMIN_EMAIL&&p===ADMIN_SENHA){
+    token='admin';user={id:'admin',nome:'Administrador',email:ADMIN_EMAIL,admin:true};
+    localStorage.setItem('fb_token',token);
+    fecharModal('modalLogin');atualizarUI();
+    toast('👑 Modo Administrador','inf');
+    mostrar('admin');return;
   }
-  const u=users.find(x=>x.email===e&&x.password===p);
-  if(!u){toast('Email ou senha inválidos','error');return}
-  token=u.id;currentUser=u;
-  localStorage.setItem('felixbet_token',token);
-  closeModal('loginModal');updateUI();
-  toast(`✅ Bem-vindo, ${u.name}!`,'success');
-  showTab('games');
+  const u=usuarios.find(x=>x.email===e&&x.senha===p);
+  if(!u){toast('Email ou senha inválidos','err');return}
+  token=u.id;user=u;
+  localStorage.setItem('fb_token',token);
+  fecharModal('modalLogin');atualizarUI();
+  toast(`✅ Bem-vindo, ${u.nome}!`,'suc');
+  mostrar('games');
 }
 
 // ========== DEPÓSITO ==========
-function deposit(){
-  const amt=parseFloat(document.getElementById('depositAmount').value);
-  if(!amt||amt<CFG.minDeposit){toast(`Mínimo: R$ ${CFG.minDeposit}`,'error');return}
-  const bonus=amt*CFG.playsPerReal;
-  const total=amt+bonus;
+function depositar(){
+  const v=parseFloat(document.getElementById('depVal').value);
+  if(!v||v<1){toast('Mínimo: R$ 1,00','err');return}
+  const bonus=v*2;
+  const total=v+bonus;
   
-  // Dinheiro vai pro admin
-  adminData.balance+=amt;
-  adminData.totalDeposits=(adminData.totalDeposits||0)+amt;
-  saveAdmin();
+  admin.saldo+=v;
+  admin.depositos=(admin.depositos||0)+v;
+  salvarA();
   
-  // Jogador recebe saldo de jogo
-  addBalance(total);
+  addSaldo(total);
   
   const u=getUser();
-  if(u&&!u.isAdmin){
-    const idx=users.findIndex(x=>x.id===u.id);
-    if(idx>-1){
-      if(!users[idx].history)users[idx].history=[];
-      users[idx].history.unshift({type:'deposit',amount:total,date:new Date().toLocaleString('pt-BR'),desc:`Depósito R$ ${amt.toFixed(2)} + bônus R$ ${bonus.toFixed(2)}`});
-      saveUsers();
+  if(u&&!u.admin){
+    const i=usuarios.findIndex(x=>x.id===u.id);
+    if(i>-1){
+      if(!usuarios[i].historico)usuarios[i].historico=[];
+      usuarios[i].historico.unshift({tipo:'dep',valor:total,data:new Date().toLocaleString('pt-BR'),desc:`Depósito R$ ${v.toFixed(2)} + R$ ${bonus.toFixed(2)} bônus`});
+      salvarU();
     }
   }
   
-  closeModal('depositModal');
-  document.getElementById('depositAmount').value='';
-  toast(`💰 Depósito de R$ ${amt.toFixed(2)} + R$ ${bonus.toFixed(2)} bônus!`,'success');
+  fecharModal('modalDep');
+  document.getElementById('depVal').value='';
+  toast(`💰 Depósito de R$ ${v.toFixed(2)} + R$ ${bonus.toFixed(2)} bônus!`,'suc');
 }
 
 // ========== SAQUE ==========
-function withdraw(){
-  const amt=parseFloat(document.getElementById('withdrawAmount').value);
-  const pix=document.getElementById('withdrawPix').value;
-  if(!amt||amt<CFG.minWithdraw){toast(`Mínimo: R$ ${CFG.minWithdraw}`,'error');return}
-  if(!pix){toast('Informe a chave PIX','error');return}
-  if(getBalance()<amt){toast('Saldo insuficiente','error');return}
+function sacar(){
+  const v=parseFloat(document.getElementById('saqVal').value);
+  const p=document.getElementById('saqPix').value;
+  if(!v||v<MIN_SAQUE){toast(`Mínimo: R$ ${MIN_SAQUE},00`,'err');return}
+  if(!p){toast('Informe a chave PIX','err');return}
+  if(getSaldo()<v){toast('Saldo insuficiente','err');return}
   
-  // Sai do saldo do jogador
-  addBalance(-amt);
+  addSaldo(-v);
   
   const u=getUser();
-  if(u&&!u.isAdmin){
-    const idx=users.findIndex(x=>x.id===u.id);
-    if(idx>-1){
-      if(!users[idx].history)users[idx].history=[];
-      users[idx].history.unshift({type:'withdraw',amount:-amt,date:new Date().toLocaleString('pt-BR'),desc:`Saque PIX: ${pix}`});
-      users[idx].totalWithdraws=(users[idx].totalWithdraws||0)+amt;
-      saveUsers();
+  if(u&&!u.admin){
+    const i=usuarios.findIndex(x=>x.id===u.id);
+    if(i>-1){
+      if(!usuarios[i].historico)usuarios[i].historico=[];
+      usuarios[i].historico.unshift({tipo:'saque',valor:-v,data:new Date().toLocaleString('pt-BR'),desc:`Saque PIX: ${p}`});
+      usuarios[i].totalSaq=(usuarios[i].totalSaq||0)+v;
+      salvarU();
     }
   }
   
-  // Sai do admin também
-  adminData.balance-=amt;
-  adminData.totalWithdraws=(adminData.totalWithdraws||0)+amt;
-  saveAdmin();
+  admin.saldo-=v;
+  admin.saques=(admin.saques||0)+v;
+  salvarA();
   
-  closeModal('withdrawModal');
-  document.getElementById('withdrawAmount').value='';
-  document.getElementById('withdrawPix').value='';
-  toast(`💸 Saque de R$ ${amt.toFixed(2)} para ${pix} solicitado!`,'success');
+  fecharModal('modalSaq');
+  document.getElementById('saqVal').value='';
+  document.getElementById('saqPix').value='';
+  toast(`💸 Saque de R$ ${v.toFixed(2)} solicitado!`,'suc');
 }
 
 // ========== PERFIL ==========
-function renderProfile(){
+function renderConta(){
   const u=getUser();
-  if(!u||u.isAdmin){document.getElementById('profileContainer').innerHTML='<p>Faça login como jogador</p>';return}
+  if(!u||u.admin){document.getElementById('contaContainer').innerHTML='<p style="color:#888">Faça login como jogador</p>';return}
   
-  const hist=(u.history||[]).slice(0,15);
-  const histHtml=hist.length?hist.map(h=>
-    `<div class="history-item">
-      <span>${h.desc||h.type}</span>
-      <span class="${h.amount>0?'win':'lose'}">${h.amount>0?'+':''}R$ ${Math.abs(h.amount).toFixed(2)}</span>
-      <span style="color:#666;font-size:10px">${h.date||''}</span>
+  const hist=(u.historico||[]).slice(0,15);
+  const hh=hist.length?hist.map(h=>
+    `<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:11px">
+      <span>${h.desc||h.tipo}</span>
+      <span style="color:${h.valor>0?'#4CAF50':'#f44336'}">${h.valor>0?'+':''}R$ ${Math.abs(h.valor).toFixed(2)}</span>
+      <span style="color:#666">${h.data||''}</span>
     </div>`
   ).join(''):'<p style="color:#666;font-size:12px">Nenhuma transação.</p>';
   
-  document.getElementById('profileContainer').innerHTML=`
-    <div style="text-align:center;margin-bottom:20px">
-      ${u.photo?`<img src="${u.photo}" class="profile-avatar">`:'<div class="profile-avatar" style="display:flex;align-items:center;justify-content:center;font-size:32px">👤</div>'}
-      <h3 style="margin-top:8px">${u.name}</h3>
-      <button class="btn btn-dark btn-sm" onclick="document.getElementById('photoUpload').click()">📷 Alterar Foto</button>
-      <input type="file" id="photoUpload" accept="image/*" style="display:none" onchange="uploadPhoto(this)">
+  const foto=u.foto?`<img src="${u.foto}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid #FFD700;margin:0 auto 8px;display:block">`:'<div style="width:70px;height:70px;border-radius:50%;background:#1a1a28;border:3px solid #FFD700;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:28px">👤</div>';
+  
+  document.getElementById('contaContainer').innerHTML=`
+    <div style="text-align:center;margin-bottom:16px">
+      ${foto}
+      <h3 style="font-size:15px">${u.nome}</h3>
+      <button class="btn btn-dark" style="font-size:10px" onclick="document.getElementById('upFoto').click()">📷 Alterar Foto</button>
+      <input type="file" id="upFoto" accept="image/*" style="display:none" onchange="mudarFoto(this)">
+      <button class="btn btn-dark" style="font-size:10px" onclick="editarPerfil()">✏️ Editar Perfil</button>
     </div>
-    <div class="profile-grid">
-      <div class="profile-card">
-        <h3>📋 Dados Pessoais</h3>
-        <p>Nome: <span class="value" id="pName">${u.name}</span></p>
-        <p>Email: <span class="value">${u.email}</span></p>
-        <p>CPF: <span class="value">${u.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4')}</span></p>
-        <p>Telefone: <span class="value" id="pPhone">${u.phone||'Não informado'}</span></p>
-        <p>Membro desde: <span class="value">${new Date(u.createdAt).toLocaleDateString('pt-BR')}</span></p>
-        <button class="btn btn-dark btn-sm" onclick="editarPerfil()" style="margin-top:8px">✏️ Editar Perfil</button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div style="background:#12121c;border-radius:8px;padding:14px;border:1px solid rgba(255,255,255,.04)">
+        <h4 style="font-size:12px;color:#FFD700;margin-bottom:8px">📋 Dados</h4>
+        <p style="font-size:11px;color:#888">Nome: <strong style="color:#fff">${u.nome}</strong></p>
+        <p style="font-size:11px;color:#888">Email: <strong style="color:#fff">${u.email}</strong></p>
+        <p style="font-size:11px;color:#888">CPF: <strong style="color:#fff">${u.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4')}</strong></p>
+        <p style="font-size:11px;color:#888">Telefone: <strong style="color:#fff">${u.telefone||'Não informado'}</strong></p>
       </div>
-      <div class="profile-card">
-        <h3>📊 Estatísticas</h3>
-        <p>Saldo: <span class="value" style="color:var(--gold)">R$ ${getBalance().toFixed(2)}</span></p>
-        <p>Total depositado: <span class="value" style="color:#4CAF50">R$ ${(u.totalDeposits||0).toFixed(2)}</span></p>
-        <p>Total sacado: <span class="value" style="color:#f44336">R$ ${(u.totalWithdraws||0).toFixed(2)}</span></p>
-        <p>Apostas: <span class="value">${u.totalBets||0}</span></p>
-        <p>Vitórias: <span class="value" style="color:#4CAF50">${u.totalWins||0}</span></p>
-        <p>Aproveitamento: <span class="value">${u.totalBets?((u.totalWins||0)/u.totalBets*100).toFixed(1):0}%</span></p>
+      <div style="background:#12121c;border-radius:8px;padding:14px;border:1px solid rgba(255,255,255,.04)">
+        <h4 style="font-size:12px;color:#FFD700;margin-bottom:8px">📊 Estatísticas</h4>
+        <p style="font-size:11px;color:#888">Saldo: <strong style="color:#FFD700">R$ ${getSaldo().toFixed(2)}</strong></p>
+        <p style="font-size:11px;color:#888">Depositado: <strong style="color:#4CAF50">R$ ${(u.totalDep||0).toFixed(2)}</strong></p>
+        <p style="font-size:11px;color:#888">Sacado: <strong style="color:#f44336">R$ ${(u.totalSaq||0).toFixed(2)}</strong></p>
+        <p style="font-size:11px;color:#888">Apostas: <strong>${u.totalBet||0}</strong> | Vitórias: <strong style="color:#4CAF50">${u.totalWin||0}</strong></p>
       </div>
     </div>
-    <div class="profile-card" style="margin-top:16px">
-      <h3>📋 Últimas Transações</h3>
-      ${histHtml}
+    <div style="background:#12121c;border-radius:8px;padding:14px;border:1px solid rgba(255,255,255,.04);margin-top:12px">
+      <h4 style="font-size:12px;color:#FFD700;margin-bottom:8px">📋 Histórico</h4>
+      ${hh}
     </div>
   `;
 }
 
-function uploadPhoto(input){
+function mudarFoto(input){
   if(input.files&&input.files[0]){
-    const reader=new FileReader();
-    reader.onload=function(e){
+    const r=new FileReader();
+    r.onload=function(e){
       const u=getUser();
-      if(u&&!u.isAdmin){
-        const idx=users.findIndex(x=>x.id===u.id);
-        if(idx>-1){
-          users[idx].photo=e.target.result;
-          currentUser=users[idx];
-          saveUsers();
-          renderProfile();
-          toast('📷 Foto atualizada!','success');
-        }
+      if(u&&!u.admin){
+        const i=usuarios.findIndex(x=>x.id===u.id);
+        if(i>-1){usuarios[i].foto=e.target.result;user=usuarios[i];salvarU();renderConta();toast('📷 Foto atualizada!','suc')}
       }
     };
-    reader.readAsDataURL(input.files[0]);
+    r.readAsDataURL(input.files[0]);
   }
 }
 
 function editarPerfil(){
-  const u=getUser();
-  if(!u)return;
-  const novoNome=prompt('Novo nome:',u.name);
-  if(novoNome&&novoNome.trim()){
-    const idx=users.findIndex(x=>x.id===u.id);
-    if(idx>-1){
-      users[idx].name=novoNome.trim();
-      currentUser=users[idx];
-      saveUsers();
-      renderProfile();
-      updateUI();
-      toast('Nome atualizado!','success');
-    }
+  const u=getUser();if(!u)return;
+  const nn=prompt('Novo nome:',u.nome);
+  if(nn&&nn.trim()){
+    const i=usuarios.findIndex(x=>x.id===u.id);
+    if(i>-1){usuarios[i].nome=nn.trim();user=usuarios[i];salvarU();renderConta();atualizarUI();toast('Nome atualizado!','suc')}
   }
-  const novoTelefone=prompt('Novo telefone:',u.phone||'');
-  if(novoTelefone!==null){
-    const idx=users.findIndex(x=>x.id===u.id);
-    if(idx>-1){
-      users[idx].phone=novoTelefone;
-      currentUser=users[idx];
-      saveUsers();
-      renderProfile();
-      toast('Telefone atualizado!','success');
-    }
+  const tel=prompt('Novo telefone:',u.telefone||'');
+  if(tel!==null){
+    const i=usuarios.findIndex(x=>x.id===u.id);
+    if(i>-1){usuarios[i].telefone=tel;user=usuarios[i];salvarU();renderConta();toast('Telefone atualizado!','suc')}
   }
 }
 
 // ========== ADMIN ==========
 function renderAdmin(){
-  const totalDeposits=adminData.totalDeposits||0;
-  const totalWithdraws=adminData.totalWithdraws||0;
-  const totalPrizes=adminData.totalPrizes||0;
-  const lucro=adminData.balance;
-  
+  const lucro=admin.saldo;
   let html=`
     <div class="admin-grid">
-      <div class="admin-card"><h4>💰 Saldo Admin</h4><div class="value">R$ ${lucro.toFixed(2)}</div><div class="sub">Lucro total</div></div>
-      <div class="admin-card"><h4>👥 Jogadores</h4><div class="value">${users.length}</div><div class="sub">Contas criadas</div></div>
-      <div class="admin-card"><h4>📥 Total Depósitos</h4><div class="value" style="color:#4CAF50">R$ ${totalDeposits.toFixed(2)}</div><div class="sub">Entrada total</div></div>
-      <div class="admin-card"><h4>📤 Total Saques</h4><div class="value" style="color:#f44336">R$ ${totalWithdraws.toFixed(2)}</div><div class="sub">Saídas</div></div>
-      <div class="admin-card"><h4>🏆 Prêmios Pagos</h4><div class="value" style="color:#FF9800">R$ ${totalPrizes.toFixed(2)}</div><div class="sub">Aos jogadores</div></div>
+      <div class="admin-card"><h4>💰 Saldo Admin</h4><div class="v">R$ ${lucro.toFixed(2)}</div></div>
+      <div class="admin-card"><h4>👥 Jogadores</h4><div class="v">${usuarios.length}</div></div>
+      <div class="admin-card"><h4>📥 Depósitos</h4><div class="v" style="color:#4CAF50">R$ ${(admin.depositos||0).toFixed(2)}</div></div>
+      <div class="admin-card"><h4>📤 Saques</h4><div class="v" style="color:#f44336">R$ ${(admin.saques||0).toFixed(2)}</div></div>
+      <div class="admin-card"><h4>🏆 Prêmios</h4><div class="v" style="color:#FF9800">R$ ${(admin.premios||0).toFixed(2)}</div></div>
     </div>
+    <div class="chart-box"><canvas id="grafLucro"></canvas></div>
     <div class="chart-box">
-      <h4 style="font-size:13px;color:var(--gold);margin-bottom:10px">📊 Lucro da Casa (últimos dias)</h4>
-      <canvas id="profitChart"></canvas>
-    </div>
-    <div class="chart-box">
-      <h4 style="font-size:13px;color:#888;margin-bottom:10px">👥 Jogadores Cadastrados</h4>
-      <div style="max-height:400px;overflow-y:auto">`;
+      <h4 style="font-size:12px;color:#888;margin-bottom:8px">👥 Jogadores</h4>
+      <div style="max-height:350px;overflow-y:auto">`;
   
-  if(users.length===0){
-    html+='<p style="color:#666;font-size:13px;text-align:center;padding:20px">Nenhum jogador ainda.</p>';
+  if(usuarios.length===0){
+    html+='<p style="color:#666;font-size:12px;text-align:center;padding:16px">Nenhum jogador ainda.</p>';
   }else{
-    users.forEach(u=>{
-      html+=`
-        <div class="player-row" onclick="verJogador('${u.id}')">
-          <div><div class="name">${u.name}</div><div class="email">${u.email}</div></div>
-          <div><span class="bal">R$ ${(u.balance||0).toFixed(2)}</span><br><span style="color:#666;font-size:10px">${u.totalBets||0} apostas</span></div>
-          <div style="color:#888;font-size:11px">${new Date(u.createdAt).toLocaleDateString('pt-BR')}</div>
-        </div>`;
+    usuarios.forEach(u=>{
+      html+=`<div class="prow" onclick="verJogador('${u.id}')"><div><div class="nm">${u.nome}</div><div style="color:#888;font-size:10px">${u.email}</div></div><div><div class="ml">R$ ${(u.saldo||0).toFixed(2)}</div><div style="color:#666;font-size:9px">${u.totalBet||0} apostas</div></div></div>`;
     });
   }
   
   html+=`</div></div>`;
   document.getElementById('adminContainer').innerHTML=html;
   
-  // Gráfico
   setTimeout(()=>{
-    const ctx=document.getElementById('profitChart');
+    const ctx=document.getElementById('grafLucro');
     if(ctx){
-      if(chartInstance)chartInstance.destroy();
-      const labels=[];
-      const data=[];
-      for(let i=6;i>=0;i--){
-        const d=new Date();
-        d.setDate(d.getDate()-i);
-        labels.push(d.toLocaleDateString('pt-BR').slice(0,5));
-        data.push(Math.round((lucro*Math.random()*0.3+lucro*0.7)*100)/100);
-      }
-      chartInstance=new Chart(ctx,{
+      if(grafico)grafico.destroy();
+      const lbs=[],vals=[];
+      for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);lbs.push(d.toLocaleDateString('pt-BR').slice(0,5));vals.push(Math.round(lucro*(0.7+Math.random()*0.3)*100)/100)}
+      grafico=new Chart(ctx,{
         type:'line',
-        data:{labels,datasets:[{
-          label:'Lucro (R$)',
-          data,
-          borderColor:'#FFD700',
-          backgroundColor:'rgba(255,215,0,.1)',
-          fill:true,
-          tension:0.4,
-          pointBackgroundColor:'#FFD700'
-        }]},
-        options:{
-          responsive:true,
-          plugins:{legend:{labels:{color:'#888'}}},
-          scales:{
-            x:{ticks:{color:'#666'},grid:{color:'rgba(255,255,255,.04)'}},
-            y:{ticks:{color:'#666'},grid:{color:'rgba(255,255,255,.04)'}}
-          }
-        }
+        data:{labels:lbs,datasets:[{label:'Lucro (R$)',data:vals,borderColor:'#FFD700',backgroundColor:'rgba(255,215,0,.1)',fill:true,tension:.4,pointBackgroundColor:'#FFD700'}]},
+        options:{responsive:true,plugins:{legend:{labels:{color:'#888'}}},scales:{x:{ticks:{color:'#666'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#666'},grid:{color:'rgba(255,255,255,.04)'}}}}
       });
     }
   },100);
 }
 
 function verJogador(id){
-  const u=users.find(x=>x.id===id);
-  if(!u){toast('Jogador não encontrado','error');return}
-  
-  const hist=(u.history||[]).slice(0,10);
-  const histHtml=hist.length?hist.map(h=>
-    `<div class="history-item">
-      <span>${h.desc||h.type}</span>
-      <span class="${h.amount>0?'win':'lose'}">${h.amount>0?'+':''}R$ ${Math.abs(h.amount).toFixed(2)}</span>
-      <span style="color:#666;font-size:10px">${h.date||''}</span>
+  const u=usuarios.find(x=>x.id===id);
+  if(!u){toast('Jogador não encontrado','err');return}
+  const hist=(u.historico||[]).slice(0,10);
+  const hh=hist.length?hist.map(h=>
+    `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:11px">
+      <span>${h.desc||h.tipo}</span>
+      <span style="color:${h.valor>0?'#4CAF50':'#f44336'}">${h.valor>0?'+':''}R$ ${Math.abs(h.valor).toFixed(2)}</span>
+      <span style="color:#666">${h.data||''}</span>
     </div>`
-  ).join(''):'<p style="color:#666;font-size:12px">Nenhuma transação.</p>';
+  ).join(''):'<p style="color:#666;font-size:11px">Nenhuma transação.</p>';
   
-  const info = [
-    `📧 Email: ${u.email}`,
-    `🆔 CPF: ${u.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4')}`,
-    `📅 Nascimento: ${new Date(u.birth).toLocaleDateString('pt-BR')}`,
-    `📱 Telefone: ${u.phone||'Não informado'}`,
-    `📅 Cadastro: ${new Date(u.createdAt).toLocaleDateString('pt-BR')}`,
-    `💰 Saldo: R$ ${(u.balance||0).toFixed(2)}`,
-    `📥 Total depositado: R$ ${(u.totalDeposits||0).toFixed(2)}`,
-    `📤 Total sacado: R$ ${(u.totalWithdraws||0).toFixed(2)}`,
-    `🎮 Apostas: ${u.totalBets||0}`,
-    `🏆 Vitórias: ${u.totalWins||0}`
-  ].join('<br>');
-  
-  // Modal de visualização
   document.getElementById('adminContainer').innerHTML+=`
-    <div class="modal-overlay active" style="position:relative;background:transparent;backdrop-filter:none;padding:0;margin-top:16px" id="playerDetail">
-      <div class="modal" style="max-width:500px;background:var(--card);border:1px solid var(--gold)">
-        <div class="modal-header"><h2>👤 ${u.name}</h2><button class="modal-close" onclick="document.getElementById('playerDetail').remove()">✕</button></div>
-        <div style="font-size:13px;color:#aaa;line-height:1.8">${info}</div>
-        <div style="margin-top:14px;background:var(--card2);border-radius:8px;padding:12px">
-          <h4 style="font-size:12px;color:var(--gold);margin-bottom:8px">📋 Últimas Transações</h4>
-          ${histHtml}
+    <div class="modal-overlay active" style="position:relative;background:transparent;backdrop-filter:none;padding:0;margin-top:12px" id="detJog">
+      <div class="modal" style="max-width:460px;background:#12121c;border-color:#FFD700">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <h2 style="font-size:15px">👤 ${u.nome}</h2>
+          <button style="background:rgba(255,0,0,.1);border:none;color:#f44336;font-size:18px;cursor:pointer;border-radius:4px;padding:2px 8px" onclick="document.getElementById('detJog').remove()">✕</button>
+        </div>
+        <div style="font-size:12px;color:#aaa;line-height:2">
+          📧 Email: ${u.email}<br>
+          🆔 CPF: ${u.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4')}<br>
+          📅 Nasc: ${new Date(u.nasc).toLocaleDateString('pt-BR')}<br>
+          📱 Tel: ${u.telefone||'Não informado'}<br>
+          📅 Cadastro: ${new Date(u.criado).toLocaleDateString('pt-BR')}<br>
+          💰 Saldo: R$ ${(u.saldo||0).toFixed(2)}<br>
+          📥 Depósitos: R$ ${(u.totalDep||0).toFixed(2)}<br>
+          📤 Saques: R$ ${(u.totalSaq||0).toFixed(2)}<br>
+          🎮 Apostas: ${u.totalBet||0} | 🏆 Vitórias: ${u.totalWin||0}
+        </div>
+        <div style="background:#1a1a28;border-radius:6px;padding:10px;margin-top:10px">
+          <h4 style="font-size:11px;color:#FFD700;margin-bottom:6px">📋 Últimas Transações</h4>
+          ${hh}
         </div>
       </div>
     </div>`;
 }
-`
 
 // ========== JOGOS ==========
-function loadGames(filter='all'){
-  const grid=document.getElementById('gamesGrid');
-  grid.innerHTML='';
-  const f=filter==='all'?GAMES:GAMES.filter(g=>g.type===filter);
-  f.forEach(g=>{
-    const card=document.createElement('div');
-    card.className='game-card';
-    card.innerHTML=`
-      <img class="game-img" src="${g.img}" loading="lazy" onerror="this.src='${IMG.default[0]}'">
-      <div class="game-info">
-        <h3>${g.name}</h3>
-        <p>${g.type.charAt(0).toUpperCase()+g.type.slice(1)}</p>
-        <div class="game-tags">
-          <span class="game-tag tag-rtp">🎯 ${g.rtp}%</span>
-          <span class="game-tag tag-type">${g.type}</span>
-        </div>
-      </div>`;
-    card.onclick=()=>openGame(g);
-    grid.appendChild(card);
+function carregarJogos(f='all'){
+  const g=document.getElementById('gamesGrid');
+  g.innerHTML='';
+  const lista=f==='all'?TODOS_JOGOS:TODOS_JOGOS.filter(x=>x.tipo===f);
+  lista.forEach(j=>{
+    const c=document.createElement('div');
+    c.className='card';
+    c.innerHTML=`<img src="${j.img}" loading="lazy" onerror="this.src='${IMGS.outro}'"><div class="inf"><h3>${j.nome}</h3><p>${j.tipo}</p><div><span class="tag tag-rtp">🎯 ${j.rtp}%</span> <span class="tag tag-tp">${j.tipo}</span></div></div>`;
+    c.onclick=()=>abrirJogo(j);
+    g.appendChild(c);
   });
 }
 
-function filterGames(f,btn){
-  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  loadGames(f);
+function filtrar(f,btn){
+  document.querySelectorAll('#filtros .btn').forEach(b=>b.style.background='');
+  btn.style.background='rgba(255,215,0,.15)';
+  carregarJogos(f);
 }
 
-function openGame(game){
-  if(!getUser()){toast('Faça login','error');showLogin();return}
-  currentGame=game;
-  document.getElementById('gameModalTitle').textContent='🎮 '+game.name;
-  document.getElementById('gameModalImg').src=game.img;
-  document.getElementById('gameModalImg').onerror=function(){this.src=IMG.default[0]};
-  document.getElementById('gameModalName').textContent=game.name;
-  document.getElementById('gameModalDesc').textContent=game.desc;
-  document.getElementById('gameModalRulesText').textContent=game.rules;
-  document.getElementById('gameResult').className='game-result';
-  document.getElementById('gameResult').style.display='none';
-  document.getElementById('gameBetAmount').value=1;
-  document.getElementById('gameSpecificArea').innerHTML='';
-  document.getElementById('gameModal').classList.add('active');
+function abrirJogo(j){
+  if(!getUser()){toast('Faça login','err');abrirLogin();return}
+  jogoAtual=j;
+  document.getElementById('jogoTitle').textContent='🎮 '+j.nome;
+  document.getElementById('jogoImg').src=j.img;
+  document.getElementById('jogoImg').onerror=function(){this.src=IMGS.outro};
+  document.getElementById('jogoNome').textContent=j.nome;
+  document.getElementById('jogoDesc').textContent=`Jogue ${j.nome} e multiplique seus ganhos!`;
+  document.getElementById('jogoRegras').innerHTML=`<strong>📖 Regras:</strong> ${j.regras}`;
+  document.getElementById('jogoResult').className='game-result';
+  document.getElementById('jogoResult').style.display='none';
+  document.getElementById('apostaVal').value=1;
+  document.getElementById('jogoArea').innerHTML='';
+  document.getElementById('modalJogo').classList.add('active');
 }
 
-function closeGameModal(){
-  closeModal('gameModal');
-  document.getElementById('gameSpecificArea').innerHTML='';
-}
+function metade(){const i=document.getElementById('apostaVal');i.value=Math.max(0.50,parseFloat(i.value||1)/2)}
+function dobro(){const i=document.getElementById('apostaVal');i.value=Math.min(1000,parseFloat(i.value||1)*2)}
+function maximo(){const s=getSaldo();document.getElementById('apostaVal').value=Math.max(0.50,Math.min(s,1000))}
 
-function halfBet(){const i=document.getElementById('gameBetAmount');i.value=Math.max(0.50,parseFloat(i.value||1)/2)}
-function doubleBet(){const i=document.getElementById('gameBetAmount');i.value=Math.min(1000,parseFloat(i.value||1)*2)}
-function maxBet(){const b=getBalance();document.getElementById('gameBetAmount').value=Math.max(0.50,Math.min(b,1000))}
-
-function playGame(){
-  if(!currentGame||!getUser()){toast('Erro','error');return}
-  const bet=parseFloat(document.getElementById('gameBetAmount').value);
-  if(!bet||bet<0.50){toast('Mínimo: R$ 0,50','error');return}
-  if(bet>getBalance()){toast('Saldo insuficiente','error');return}
+function jogar(){
+  if(!jogoAtual||!getUser()){toast('Erro','err');return}
+  const bet=parseFloat(document.getElementById('apostaVal').value);
+  if(!bet||bet<0.50){toast('Mínimo: R$ 0,50','err');return}
+  if(bet>getSaldo()){toast('Saldo insuficiente','err');return}
   
-  addBalance(-bet);
+  addSaldo(-bet);
   
-  const type=currentGame.type;
-  let won=false,mult=0,winAmt=0;
+  let won=false,mult=0;
+  const t=jogoAtual.tipo;
   
-  // Lógica por tipo de jogo
-  switch(type){
-    case
-// Lógica por tipo de jogo
-  switch(type){
+  switch(t){
     case 'crash':
-      // Crash: multiplicador aleatório, 95% das vezes crasha rápido
-      const crashPoint = Math.random() < 0.05 ? (5 + Math.random() * 20) : (1.01 + Math.random() * 1.5);
-      const cashoutAt = 1 + Math.random() * 3;
-      won = cashoutAt < crashPoint;
-      mult = won ? cashoutAt : 0;
+      const crash=Math.random()<0.05?5+Math.random()*20:1.01+Math.random()*1.5;
+      won=Math.random()<0.35; // 35% de chance de sacar antes
+      mult=won?1.2+Math.random()*4:0;
       break;
-      
     case 'mines':
-      // Mines: grid 5x5, 3 bombas. Jogador clica em 1 quadrado
-      const bombas = new Set();
-      while(bombas.size < 3) bombas.add(Math.floor(Math.random() * 25));
-      const escolha = Math.floor(Math.random() * 25);
-      won = !bombas.has(escolha);
-      mult = won ? 1.5 + Math.random() * 2 : 0;
+      won=Math.random()<0.4;
+      mult=won?1.5+Math.random()*3:0;
       break;
-      
     case 'slots':
-      // Slots 3x3: 3 símbolos iguais na linha do meio
-      const s1 = Math.floor(Math.random() * 6);
-      const s2 = Math.floor(Math.random() * 6);
-      const s3 = Math.floor(Math.random() * 6);
-      won = (s1 === s2 && s2 === s3);
-      if(won && s1 === 0) mult = 50; // 7️⃣
-      else if(won && s1 === 1) mult = 20; // 💰
-      else if(won) mult = 10;
-      else mult = 0;
+      won=Math.random()<0.15;
+      mult=won?(Math.random()<0.1?50:10):0;
       break;
-      
     case 'tigre':
-      // Fortune Tiger: 3x3 com wild
-      const t1 = Math.floor(Math.random() * 5);
-      const t2 = Math.floor(Math.random() * 5);
-      const t3 = Math.floor(Math.random() * 5);
-      won = (t1 === t2 && t2 === t3) || t1 === 4 || t2 === 4 || t3 === 4; // wild = 4
-      mult = won ? (3 + Math.random() * 7) : 0;
+      won=Math.random()<0.18;
+      mult=won?3+Math.random()*7:0;
       break;
-      
-    case 'cards':
-      // 21: jogador vs dealer
-      const player = 14 + Math.floor(Math.random() * 7);
-      const dealer = 14 + Math.floor(Math.random() * 7);
-      won = player > dealer && player <= 21;
-      mult = won ? 2 : 0;
-      break;
-      
     case 'dice':
-      // Dados: acima ou abaixo de 7
-      const dado1 = Math.floor(Math.random() * 6) + 1;
-      const dado2 = Math.floor(Math.random() * 6) + 1;
-      const soma = dado1 + dado2;
-      const escolhaDado = Math.random() < 0.5;
-      won = (escolhaDado && soma > 7) || (!escolhaDado && soma < 7);
-      mult = won ? 2 : 0;
+      won=Math.random()<0.45;
+      mult=won?2:0;
       break;
-      
+    case 'cards':
+      won=Math.random()<0.4;
+      mult=won?2:0;
+      break;
     default:
-      // Plinko e outros: 40% de chance
-      won = Math.random() < 0.4;
-      mult = won ? 1.5 + Math.random() * 3 : 0;
+      won=Math.random()<0.35;
+      mult=won?1.5+Math.random()*3:0;
   }
   
-  winAmt = won ? Math.round(bet * mult * 100) / 100 : 0;
-  if(won) addBalance(winAmt);
+  const winAmt=won?Math.round(bet*mult*100)/100:0;
+  if(won)addSaldo(winAmt);
   
-  // Registrar histórico
-  const u = getUser();
-  if(u && !u.isAdmin){
-    const idx = users.findIndex(x => x.id === u.id);
-    if(idx > -1){
-      if(!users[idx].history) users[idx].history = [];
-      users[idx].history.unshift({
-        type: 'bet',
-        amount: won ? winAmt : -bet,
-        date: new Date().toLocaleString('pt-BR'),
-        desc: `${currentGame.name} - ${won ? '🏆' : '💥'} R$ ${bet.toFixed(2)}`
-      });
-      users[idx].totalBets = (users[idx].totalBets || 0) + 1;
-      if(won) {
-        users[idx].totalWins = (users[idx].totalWins || 0) + 1;
-        // Prêmio sai do admin
-        adminData.balance -= winAmt;
-        adminData.totalPrizes = (adminData.totalPrizes || 0) + winAmt;
-        saveAdmin();
+  // Histórico
+  const u=getUser();
+  if(u&&!u.admin){
+    const i=usuarios.findIndex(x=>x.id===u.id);
+    if(i>-1){
+      if(!usuarios[i].historico)usuarios[i].historico=[];
+      usuarios[i].historico.unshift({tipo:'aposta',valor:won?winAmt:-bet,data:new Date().toLocaleString('pt-BR'),desc:`${jogoAtual.nome} - ${won?'🏆':'💥'} R$ ${bet.toFixed(2)}`});
+      usuarios[i].totalBet=(usuarios[i].totalBet||0)+1;
+      if(won){
+        usuarios[i].totalWin=(usuarios[i].totalWin||0)+1;
+        admin.saldo-=winAmt;
+        admin.premios=(admin.premios||0)+winAmt;
+        salvarA();
       }
-      saveUsers();
+      salvarU();
     }
   }
   
-  const result = document.getElementById('gameResult');
-  result.style.display = 'block';
+  if(!won){
+    admin.saldo+=bet;
+    salvarA();
+  }
+  
+  const r=document.getElementById('jogoResult');
+  r.style.display='block';
   if(won){
-    result.className = 'game-result win';
-    result.textContent = `🏆 VOCÊ GANHOU! R$ ${winAmt.toFixed(2)} (${mult.toFixed(2)}x)`;
-    // Animação especial para slots/tigre
-    if(type === 'slots' || type === 'tigre'){
-      document.getElementById('gameSpecificArea').innerHTML = `
-        <div class="slots-grid" style="max-width:200px">
-          ${[s1||t1, s2||t2, s3||t3].map(v => 
-            `<div class="slot-cell spin">${['7️⃣','💰','🍒','🍋','🍀','⭐','🐯','👑','🔔','💎'][v]||'🍒'}</div>`
-          ).join('')}
-        </div>`;
+    r.className='game-result win';
+    r.textContent=`🏆 VOCÊ GANHOU! R$ ${winAmt.toFixed(2)} (${mult.toFixed(2)}x)`;
+    toast(`🏆 Ganhou R$ ${winAmt.toFixed(2)} no ${jogoAtual.nome}!`,'suc');
+    if(t==='slots'||t==='tigre'){
+      document.getElementById('jogoArea').innerHTML=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:180px;margin:8px auto">${[1,2,3].map(()=>`<div style="aspect-ratio:1;background:#1a1a28;border:1px solid #2a2a3a;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:28px">${['🎰','💎','7️⃣','🍒','⭐','💰'][Math.floor(Math.random()*6)]}</div>`).join('')}</div>`;
     }
-    toast(`🏆 Ganhou R$ ${winAmt.toFixed(2)} no ${currentGame.name}!`, 'success');
   } else {
-    result.className = 'game-result lose';
-    result.textContent = `💥 Perdeu R$ ${bet.toFixed(2)}`;
-    // Dinheiro da perda vai pro admin
-    adminData.balance += bet;
-    saveAdmin();
+    r.className='game-result lose';
+    r.textContent=`💥 Perdeu R$ ${bet.toFixed(2)}`;
   }
 }
 
-// ========== INICIALIZAÇÃO ==========
+// ========== INICIAR ==========
 function init(){
   if(token){
-    if(token === 'admin'){
-      currentUser = {id:'admin',name:'Administrador',email:ADMIN_EMAIL,isAdmin:true};
+    if(token==='admin'){
+      user={id:'admin',nome:'Administrador',email:ADMIN_EMAIL,admin:true};
     } else {
-      const u = users.find(x => x.id === token);
-      if(u) currentUser = u;
-      else { token = null; localStorage.removeItem('felixbet_token'); }
+      const u=usuarios.find(x=>x.id===token);
+      if(u)user=u;
+      else{token=null;localStorage.removeItem('fb_token')}
     }
   }
-  updateUI();
-  loadGames();
   
-  // Auto-save a cada 10s
-  setInterval(() => {
-    if(token && currentUser && !currentUser.isAdmin){
-      const found = users.find(x => x.id === token);
-      if(found) currentUser = found;
-      document.getElementById('headerBalance').textContent = `R$ ${getBalance().toFixed(2)}`;
+  if(!localStorage.getItem('fb_admin')){
+    localStorage.setItem('fb_admin',JSON.stringify({saldo:999999,depositos:0,saques:0,premios:0}));
+    admin={saldo:999999,depositos:0,saques:0,premios:0};
+  }
+  
+  atualizarUI();
+  carregarJogos();
+  
+  setInterval(()=>{
+    if(token&&user&&!user.admin){
+      const f=usuarios.find(x=>x.id===token);
+      if(f)user=f;
+      document.getElementById('hSaldo').textContent=`R$ ${getSaldo().toFixed(2)}`;
     }
-  }, 10000);
+  },10000);
   
-  console.log('🎰 FelixBet - Sistema Completo Carregado!');
-  console.log(`👑 Admin: ${ADMIN_EMAIL} / ${ADMIN_PASS}`);
-  console.log(`💰 Saldo Admin: R$ ${adminData.balance.toFixed(2)}`);
-  console.log(`👥 Jogadores: ${users.length}`);
+  console.log('🎰 FelixBet carregado!');
+  console.log(`👑 Admin: ${ADMIN_EMAIL} / ${ADMIN_SENHA}`);
 }
 
 init();
